@@ -75,6 +75,7 @@ PACK.ro={ui:{
  srcTitle:"Surse oficiale",
  footTag:"Gratuit. Fără reclame în esență. Fără cont.", footOfficial:"Instituții oficiale", footLegal:"Juridic",
  footDisc:"Această pagină este o ofertă informativă privată și nu înlocuiește consultanța medicală, juridică sau fiscală. Obligatorii sunt exclusiv instituțiile oficiale menționate.",
+ viewCountLabel:"vizualizări de la lansarea acestei pagini",
  obTitle:"Configurat în 60 de secunde", obSub:"Totul rămâne pe dispozitivul tău. Poți sări peste orice pas.",
  obDue:"Când este termenul nașterii?", obDueAlt:"Încă nu îl știi? Calculează-l din ultima menstruație.",
  obFirst:"Este primul tău copil?", obYes:"Da", obNo:"Nu",

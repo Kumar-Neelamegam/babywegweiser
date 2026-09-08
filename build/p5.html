@@ -528,6 +528,24 @@ initDefaults();
 paintStatic();
 if(!S.due&&!S.onboarded){ renderAll(); openOnboard(); } else { renderAll(); scheduleLocal(); }
 window.addEventListener("resize",()=>{ clearTimeout(window.__rz); window.__rz=setTimeout(renderTimeline,180); });
+
+/* ---------- view counter ----------
+   The only network request this app ever makes. It hits a small Cloudflare
+   Worker the site owner deploys themselves (see docs/view-counter.md), which
+   increments and returns a page-load count — nothing else is sent or read.
+   CSP connect-src only permits this one origin; every other host is blocked.
+   If the Worker isn't configured, this fails silently and the counter stays
+   hidden. */
+(function(){
+  const url="__COUNTER_URL__";
+  if(!url || url.indexOf("YOUR-SUBDOMAIN")>-1) return;
+  fetch(url,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    if(d && typeof d.count==="number"){
+      const el=$("#viewCountN");
+      if(el) el.textContent=d.count.toLocaleString(LOCALE[S.lang]||"en-GB");
+    }
+  }).catch(()=>{});
+})();
 </script>
 </body>
 </html>

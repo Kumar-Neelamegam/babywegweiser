@@ -35,7 +35,8 @@ any calendar app, and links every claim back to an official source.
 ### Privacy — the whole point
 
 - No server. No API. No fetch. `connect-src 'none'` in the CSP makes this
-  enforceable, not just a promise.
+  enforceable, not just a promise. The one opt-in exception is a footer view
+  counter — see below.
 - All state lives in `localStorage`, with an in-memory fallback when storage
   is blocked.
 - No third-party fonts, images, scripts, or trackers. Fonts are subset and
@@ -53,6 +54,14 @@ any calendar app, and links every claim back to an official source.
   nothing from a file lands in state unvalidated.
 - `referrer: no-referrer`, `base-uri 'none'`, `form-action 'none'`.
 
+### View counter (optional)
+
+The footer can show a page-load count, backed by a small Cloudflare Worker
+you deploy and own — no third-party analytics service. Disabled by default
+(the footer just shows a dash). See [`docs/view-counter.md`](docs/view-counter.md)
+for setup; it's the only network request the site ever makes, and `mk.py`
+scopes the CSP `connect-src` to exactly that one origin.
+
 ---
 
 ## Files
@@ -67,6 +76,8 @@ pregnancy-austria-spec.md   product spec, traffic + monetisation analysis
 reel-kit.md                 shot list, captions, hashtags, posting plan
 security-headers.md         server header configs for various hosts
 images-guide.md             image licensing, photo slots, typography, motion
+view-counter.md              optional footer view counter, setup steps
+worker/                      Cloudflare Worker source for the view counter
 *.mjs                       Playwright test scripts
 ```
 

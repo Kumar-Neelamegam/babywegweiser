@@ -1,5 +1,10 @@
 import re, sys, hashlib, base64, subprocess, json, os
 
+# Set this to your deployed Cloudflare Worker URL to enable the view counter
+# in the footer (see docs/view-counter.md). Leave the placeholder in place to
+# ship the site with the counter silently disabled.
+COUNTER_URL = "https://babywegweiser-counter.YOUR-SUBDOMAIN.workers.dev"
+
 def assemble():
     p1 = open('build/p1.html').read()
     p1 = p1.replace('<style>', '<style>\n' + open('build/fonts.css').read(), 1)
@@ -11,10 +16,17 @@ def assemble():
     parts = [p1] + [open('build/' + f).read() for f in
                     ['p2.html', 'p3.html', 'p4.html', 'p4b.html', 'p5.html']]
     parts[-1] = parts[-1].replace('</body>', '').replace('</html>', '')
-    return ''.join(parts) + open('build/p6.html').read() + open('build/p7.html').read() + open('build/p8.html').read() + '\n</body>\n</html>\n'
+    html = ''.join(parts) + open('build/p6.html').read() + open('build/p7.html').read() + open('build/p8.html').read() + '\n</body>\n</html>\n'
+    return html.replace('__COUNTER_URL__', COUNTER_URL)
 
 def sha(txt):
     return "'sha256-" + base64.b64encode(hashlib.sha256(txt.encode('utf-8')).digest()).decode() + "'"
+
+def counter_origin():
+    if 'YOUR-SUBDOMAIN' in COUNTER_URL:
+        return "'none'"
+    m = re.match(r'^(https?://[^/]+)', COUNTER_URL)
+    return m.group(1) if m else "'none'"
 
 def add_csp(html):
     scripts = re.findall(r'<script>(.*?)</script>', html, re.S)
@@ -24,7 +36,7 @@ def add_csp(html):
            "style-src 'unsafe-inline'; "
            "img-src 'self' data:; "
            "font-src 'self' data:; "
-           "connect-src 'none'; "
+           "connect-src " + counter_origin() + "; "
            "media-src 'none'; "
            "object-src 'none'; "
            "frame-src 'none'; "

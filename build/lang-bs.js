@@ -75,6 +75,7 @@ PACK.bs={ui:{
  srcTitle:"Zvanični izvori",
  footTag:"Besplatno. Bez reklama u jezgri. Bez naloga.", footOfficial:"Zvanične institucije", footLegal:"Pravno",
  footDisc:"Ova stranica je privatna informativna ponuda i ne zamjenjuje medicinski, pravni ili poreski savjet. Obavezujuće su isključivo povezane zvanične institucije.",
+ viewCountLabel:"pregleda otkako je ova stranica pokrenuta",
  obTitle:"Podešeno za 60 sekundi", obSub:"Sve ostaje na vašem uređaju. Svaki korak možete preskočiti.",
  obDue:"Kada je vaš termin poroda?", obDueAlt:"Još ne znate? Izračunajte iz posljednje menstruacije.",
  obFirst:"Je li ovo vaše prvo dijete?", obYes:"Da", obNo:"Ne",

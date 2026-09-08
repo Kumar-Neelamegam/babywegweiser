@@ -6,7 +6,7 @@
 <title>BabyWegweiser — Schwangerschaft in Österreich</title>
 <meta name="description" content="Dein persönlicher Schwangerschafts-Begleiter für Österreich: Eltern-Kind-Pass-Termine, Mutterschutz, Wochengeld, Kinderbetreuungsgeld, SSW-Tracker, Ernährung. Alle Daten bleiben auf deinem Gerät.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23a8447a'/%3E%3Cpath d='M16 26.6C12 23.4 7.4 19 7.4 13.4 7.4 8.7 10.9 5.4 16 5.4s8.6 3.3 8.6 8c0 5.6-4.6 10-8.6 13.2z' fill='none' stroke='white' stroke-width='1.9'/%3E%3Ccircle cx='16' cy='13' r='3' fill='none' stroke='white' stroke-width='1.9'/%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-JCOZnc+WbgGxDISwaN61jJka3V0hI+b2uqS1PaHHla0=' 'sha256-mObH1rT7Qid72F9ZpNPd3wJkO3hcnz+QdnjPln+yR2o=' 'sha256-b34nSic+vIWUFvg6rupncQh8kyRi5VYbN49TpIz6KPg=' 'sha256-6NfwIMB51Vl5R5qY2fIyOHEayX0S+0gMwiaThHrxAfk=' 'sha256-6V5K7giW3gkWnmqDkPC5hS02ttIwvJXBIsJ6a9WgdMQ=' 'sha256-HmEkFCPyK8RjohLVlPfrCwCi7H8cSIt+mk1s/DW3eY0=' 'sha256-kKatSkHHdQ0GXCPHK/gb6cy7CU0qjybU4dY2zw4sdO4='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qkwFfw84ATYr05q2FOOKGLK5XTUnxpTgcI+tok9UPZM=' 'sha256-mObH1rT7Qid72F9ZpNPd3wJkO3hcnz+QdnjPln+yR2o=' 'sha256-b34nSic+vIWUFvg6rupncQh8kyRi5VYbN49TpIz6KPg=' 'sha256-PpgtLeGAfQjID0v7mb3dAyBaTO/K3+Y3WRiaZ9nQKZc=' 'sha256-6V5K7giW3gkWnmqDkPC5hS02ttIwvJXBIsJ6a9WgdMQ=' 'sha256-HmEkFCPyK8RjohLVlPfrCwCi7H8cSIt+mk1s/DW3eY0=' 'sha256-kKatSkHHdQ0GXCPHK/gb6cy7CU0qjybU4dY2zw4sdO4='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#fcfcfb">
@@ -1550,6 +1550,7 @@ main.wrap{padding-block:var(--sp-6) calc(var(--sp-6) * 2)}
       <a href="#" data-go="priv">Impressum</a>
       <p class="tiny" style="margin-top:8px" data-i="footDisc"></p></div>
   </div>
+  <div class="tiny" id="viewCounter" style="margin-top:14px;opacity:.7" aria-live="polite">👁 <span id="viewCountN">–</span> <span data-i="viewCountLabel"></span></div>
 </div></footer>
 
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
@@ -1618,6 +1619,7 @@ de:{
  srcTitle:"Offizielle Quellen",
  footTag:"Kostenlos. Werbefrei im Kern. Ohne Konto.", footOfficial:"Offizielle Stellen", footLegal:"Rechtliches",
  footDisc:"Diese Seite ist ein privates Informationsangebot und ersetzt keine medizinische, rechtliche oder steuerliche Beratung. Verbindlich sind ausschließlich die verlinkten offiziellen Stellen.",
+ viewCountLabel:"Aufrufe seit dem Start dieser Seite",
  obTitle:"In 60 Sekunden eingerichtet", obSub:"Alles bleibt auf deinem Gerät. Du kannst jeden Schritt überspringen.",
  obDue:"Wann ist dein Geburtstermin?", obDueAlt:"Du weißt ihn noch nicht? Berechne ihn aus der letzten Periode.",
  obFirst:"Ist es dein erstes Kind?", obYes:"Ja", obNo:"Nein",
@@ -1761,6 +1763,7 @@ en:{
  srcTitle:"Official sources",
  footTag:"Free. Ad-free at the core. No account.", footOfficial:"Official bodies", footLegal:"Legal",
  footDisc:"This site is a private information service and does not replace medical, legal or tax advice. Only the linked official bodies are binding.",
+ viewCountLabel:"views since this page went live",
  obTitle:"Set up in 60 seconds", obSub:"Everything stays on your device. You can skip any step.",
  obDue:"When is your due date?", obDueAlt:"Don't know it yet? Calculate it from your last period.",
  obFirst:"Is this your first child?", obYes:"Yes", obNo:"No",
@@ -3694,6 +3697,24 @@ initDefaults();
 paintStatic();
 if(!S.due&&!S.onboarded){ renderAll(); openOnboard(); } else { renderAll(); scheduleLocal(); }
 window.addEventListener("resize",()=>{ clearTimeout(window.__rz); window.__rz=setTimeout(renderTimeline,180); });
+
+/* ---------- view counter ----------
+   The only network request this app ever makes. It hits a small Cloudflare
+   Worker the site owner deploys themselves (see docs/view-counter.md), which
+   increments and returns a page-load count — nothing else is sent or read.
+   CSP connect-src only permits this one origin; every other host is blocked.
+   If the Worker isn't configured, this fails silently and the counter stays
+   hidden. */
+(function(){
+  const url="https://babywegweiser-counter.YOUR-SUBDOMAIN.workers.dev";
+  if(!url || url.indexOf("YOUR-SUBDOMAIN")>-1) return;
+  fetch(url,{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+    if(d && typeof d.count==="number"){
+      const el=$("#viewCountN");
+      if(el) el.textContent=d.count.toLocaleString(LOCALE[S.lang]||"en-GB");
+    }
+  }).catch(()=>{});
+})();
 </script>
 
 

@@ -75,6 +75,7 @@ PACK.tr={ui:{
  srcTitle:"Resmî kaynaklar",
  footTag:"Ücretsiz. Özünde reklamsız. Hesapsız.", footOfficial:"Resmî kurumlar", footLegal:"Hukuki",
  footDisc:"Bu sayfa özel bir bilgilendirme hizmetidir ve tıbbi, hukuki veya vergisel danışmanlığın yerini tutmaz. Yalnızca bağlantı verilen resmî kurumlar bağlayıcıdır.",
+ viewCountLabel:"bu sayfa yayına girdiğinden beri görüntülenme",
  obTitle:"60 saniyede hazır", obSub:"Her şey cihazında kalır. Her adımı atlayabilirsin.",
  obDue:"Tahmini doğum tarihin ne?", obDueAlt:"Henüz bilmiyor musun? Son adetinden hesapla.",
  obFirst:"İlk çocuğun mu?", obYes:"Evet", obNo:"Hayır",
