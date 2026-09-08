@@ -2,3 +2,4 @@ node_modules/
 reel/frames*/
 *.log
 .DS_Store
+_to_delete/
