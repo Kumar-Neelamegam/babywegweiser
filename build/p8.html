@@ -1,0 +1,144 @@
+<script>
+/* ==========================================================================
+   MOTION LAYER — scroll progress, gliding tab indicator, artwork that draws
+   itself in, breathing motif, phase headers, confetti.
+   Everything here is skipped when the OS asks for reduced motion.
+   ========================================================================== */
+
+/* ---------- scroll progress ---------- */
+(function(){
+  if(RM) return;
+  const bar=document.createElement("div"); bar.id="scrollbar"; document.body.appendChild(bar);
+  let tick=false;
+  addEventListener("scroll",()=>{
+    if(tick) return; tick=true;
+    requestAnimationFrame(()=>{
+      const h=document.documentElement;
+      const max=h.scrollHeight-h.clientHeight;
+      bar.style.width=(max>0? (h.scrollTop/max)*100 : 0)+"%";
+      tick=false;
+    });
+  },{passive:true});
+})();
+
+/* ---------- gliding tab indicator ---------- */
+function tabInk(){
+  const nav=$("#tabs"); if(!nav) return;
+  let ink=$("#tabink");
+  if(!ink){ ink=document.createElement("i"); ink.id="tabink"; nav.appendChild(ink); }
+  const on=nav.querySelector('.tab[aria-selected="true"]'); if(!on) return;
+  ink.style.width=on.offsetWidth+"px";
+  ink.style.transform="translateX("+on.offsetLeft+"px)";
+}
+addEventListener("resize",()=>{ clearTimeout(window.__ti); window.__ti=setTimeout(tabInk,150); });
+
+/* ---------- artwork reveals itself ---------- */
+let _artIO;
+function artReveal(){
+  if(RM){ $$(".art").forEach(a=>a.classList.add("in")); return; }
+  if(!_artIO) _artIO=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el=e.target;
+    el.classList.add("fadein");
+    if(el.classList.contains("draw")){
+      $$("[stroke]",el).forEach((p,i)=>{
+        let len=0; try{ len=p.getTotalLength? p.getTotalLength():0; }catch(x){}
+        if(len){ p.style.setProperty("--len",Math.ceil(len));
+                 p.style.animationDelay=(i*70)+"ms"; }
+      });
+    }
+    _artIO.unobserve(el);
+  }),{threshold:.15});
+  $$(".art").forEach(a=>{ if(a.dataset.rv) return; a.dataset.rv="1"; _artIO.observe(a); });
+}
+
+/* ---------- breathing motif ---------- */
+function breathe(){
+  if(RM) return;
+  const o=$(".orbart"); if(o) o.classList.add("breathe");
+  const h=$(".heroart use"); if(h && !h.classList.contains("breathe")) h.classList.add("breathe");
+}
+
+/* ---------- calculator card corners ---------- */
+const CALCART={cDueBtn:"a-c-due",cMsBtn:"a-c-work",cWgBtn:"a-c-coin",cKbgBtn:"a-c-gift"};
+function calcArt(){
+  Object.keys(CALCART).forEach(id=>{
+    const btn=document.getElementById(id); if(!btn) return;
+    const card=btn.closest(".card"); if(!card || card.querySelector(".cardart")) return;
+    card.insertAdjacentHTML("afterbegin", art(CALCART[id],"cardart draw"));
+  });
+}
+
+/* ---------- illustrated phase headers in the to-do list ---------- */
+const PHASEART=["a-p-before","a-p-during","a-p-after"];
+function phaseHeads(){
+  const list=$("#todoList"); if(!list) return;
+  const map={}; map[t().phBefore]="a-p-before"; map[t().phDuring]="a-p-during"; map[t().phAfter]="a-p-after";
+  $$("#todoList > h3").forEach(h=>{
+    if(h.parentElement.classList.contains("phasehead")) return;
+    const ul=h.nextElementSibling;
+    const boxes=ul? $$("input[type=checkbox]",ul) : [];
+    const done=boxes.filter(b=>b.checked).length;
+    const wrap=document.createElement("div"); wrap.className="phasehead";
+    h.parentNode.insertBefore(wrap,h);
+    wrap.insertAdjacentHTML("afterbegin", art(map[h.textContent.trim()]||"a-p-before","pa"));
+    wrap.appendChild(h);
+    wrap.insertAdjacentHTML("beforeend",`<span class="pcount">${done}/${boxes.length}</span>`);
+  });
+}
+
+/* ---------- tracker scene follows the trimester ---------- */
+function trackScene(){
+  const card=$("#v-track .card"); if(!card) return;
+  const w=+($("#weekSlider")||{}).value||12;
+  const tri=w<=13?1:(w<=27?2:3);
+  let s=card.querySelector(".trackscene");
+  if(!s){ card.insertAdjacentHTML("afterbegin", art("a-tri"+tri,"trackscene")); s=card.querySelector(".trackscene"); }
+  else if(s.dataset.tri!=tri){ s.outerHTML=art("a-tri"+tri,"trackscene"); s=card.querySelector(".trackscene"); }
+  if(s) s.dataset.tri=tri;
+}
+
+/* ---------- confetti when a whole phase is finished ---------- */
+const CONFCOL=["#a8447a","#f0a6cb","#1baf7a","#eda100","#2a78d6"];
+function confetti(x,y){
+  if(RM) return;
+  for(let i=0;i<26;i++){
+    const c=document.createElement("i");
+    c.className="conf";
+    c.style.left=x+"px"; c.style.top=y+"px";
+    c.style.background=CONFCOL[i%CONFCOL.length];
+    c.style.setProperty("--cx",(Math.cos(i)*140+(i%5-2)*40).toFixed(0)+"px");
+    c.style.setProperty("--cy",(90+ (i%7)*38)+"px");
+    c.style.setProperty("--cr",((i%2?1:-1)*(180+i*14))+"deg");
+    c.style.animationDelay=(i*12)+"ms";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),1700);
+  }
+}
+function phaseWatch(){
+  $$("#todoList input[type=checkbox]").forEach(cb=>{
+    if(cb.dataset.pw) return; cb.dataset.pw="1";
+    cb.addEventListener("change",e=>{
+      const row=cb.closest(".todo");
+      if(cb.checked && row){ row.classList.add("justdone"); setTimeout(()=>row.classList.remove("justdone"),1000); }
+      const ul=cb.closest("ul"); if(!ul||!cb.checked) return;
+      const all=$$("input[type=checkbox]",ul);
+      if(all.length && all.every(b=>b.checked)){
+        const r=ul.getBoundingClientRect();
+        confetti(r.left+r.width/2, Math.max(80,r.top+40));
+      }
+    });
+  });
+}
+
+/* ---------- run ---------- */
+function motionAll(){
+  try{ tabInk(); calcArt(); phaseHeads(); trackScene(); phaseWatch(); breathe(); artReveal(); }catch(e){}
+}
+const _rAllMo=renderAll;
+window.renderAll=function(){ _rAllMo(); motionAll(); };
+const _goMo=go;
+window.go=function(v){ _goMo(v); requestAnimationFrame(tabInk); };
+motionAll();
+addEventListener("load",()=>{ tabInk(); artReveal(); });
+</script>

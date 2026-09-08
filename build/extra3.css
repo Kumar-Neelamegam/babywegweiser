@@ -1,0 +1,109 @@
+/* ==========================================================================
+   PASS 3 — original illustrations + optional photo slots
+   All artwork is inline SVG drawn for this project: no third-party licence,
+   no external request, works offline, scales to any screen.
+   ========================================================================== */
+:root{
+  --art-a:#d98ab4; --art-b:#f6d3e4; --art-leaf:#5cc9a0; --art-leaf2:#1baf7a;
+  --art-sky:#bcd9f7; --art-sky2:#e8f1fd; --art-skin:#fbe3d3; --art-line:#7d2f5a;
+}
+:root[data-theme="dark"]{
+  --art-a:#cf6fa3; --art-b:#432033; --art-leaf:#43c496; --art-leaf2:#2eb083;
+  --art-sky:#3a6289; --art-sky2:#25415c; --art-skin:#f6d8c3; --art-line:#ffdcee;
+}
+.art{display:block;width:100%;height:auto}
+
+/* ---------- hero artwork ---------- */
+.hero{position:relative;overflow:hidden}
+.hero::after{display:none}                    /* the drawn scene replaces the blur blob */
+.heroart{
+  position:absolute;inset-block-start:-16px;inset-inline-end:-12px;width:min(28%,252px);
+  pointer-events:none;opacity:.95;
+  -webkit-mask-image:linear-gradient(to left,#000 55%,transparent);
+          mask-image:linear-gradient(to left,#000 55%,transparent);
+  animation:artFloat 18s ease-in-out infinite;
+}
+@keyframes artFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@media(max-width:860px){ .heroart{width:44%;opacity:.55} }
+@media(max-width:640px){ .heroart{display:none} }   /* text legibility wins on phones */
+.hero>*:not(.heroart){position:relative;z-index:1}
+
+/* ---------- trimester scenes ---------- */
+.triseg .emo{display:none}
+.triseg .triart{
+  position:absolute;inset-inline-end:4px;inset-block-start:50%;transform:translateY(-50%);
+  width:92px;height:auto;opacity:.9;pointer-events:none;
+}
+.triseg{padding-inline-end:96px}
+.triseg.active .triart{opacity:1}
+@media(max-width:640px){ .triseg .triart{width:84px} }
+
+/* ---------- section banners ---------- */
+.banner{
+  position:relative;display:flex;align-items:center;gap:var(--sp-4);
+  border-radius:18px;padding:var(--sp-4) var(--sp-5);margin-bottom:var(--sp-4);
+  background:linear-gradient(120deg,color-mix(in srgb,var(--brand) 11%,transparent),transparent 70%);
+  border:1px solid var(--hairline);overflow:hidden;
+}
+.banner .bart{width:130px;height:auto;flex:0 0 auto}
+.banner .btx{flex:1;min-width:0}
+.banner h3{margin:0 0 3px;font-size:1.05rem}
+.banner p{margin:0;font-size:.92rem;color:var(--ink-2);line-height:1.5}
+.banner.mint{background:linear-gradient(120deg,color-mix(in srgb,var(--s3) 13%,transparent),transparent 70%)}
+.banner.sky{background:linear-gradient(120deg,color-mix(in srgb,var(--s1) 12%,transparent),transparent 70%)}
+.banner.sun{background:linear-gradient(120deg,color-mix(in srgb,var(--s4) 15%,transparent),transparent 70%)}
+@media(max-width:560px){
+  .banner{flex-direction:column;align-items:flex-start;gap:var(--sp-2);padding:var(--sp-4)}
+  .banner .bart{width:110px}
+}
+
+/* ---------- the orb gets the drawn motif behind the produce ---------- */
+.orb .orbart{
+  position:absolute;inset:14px;opacity:.34;pointer-events:none;
+}
+:root[data-theme="dark"] .orb .orbart{opacity:.42}
+.orb .fe{position:relative;z-index:1}
+
+/* ---------- illustrated empty state ---------- */
+.empty .art{width:170px;margin:0 auto var(--sp-2)}
+.empty svg.ic{display:none}
+
+/* ---------- privacy scene ---------- */
+.privscene{width:190px;margin:0 auto var(--sp-3);display:block;animation:artFloat 9s ease-in-out infinite}
+.shieldbig{display:none}
+
+/* ---------- footer scene ---------- */
+.footart{width:132px;height:auto;margin-top:var(--sp-3);opacity:.92}
+
+/* ==========================================================================
+   PHOTO SLOTS — drop a real photo in without touching anything else.
+   Set PHOTO.hero / PHOTO.track / PHOTO.diet / PHOTO.todo to a data: URI or a
+   local file path. Empty slot → the illustration above is used instead.
+   ========================================================================== */
+.photo{position:relative;border-radius:20px;overflow:hidden;margin-bottom:var(--sp-4);
+  border:1px solid var(--hairline);background:var(--plane)}
+.photo img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:21/9}
+.photo .scrim{position:absolute;inset:0;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--surface-1) 88%,transparent) 0 38%,transparent 78%)}
+.photo .cap{position:absolute;inset-block-end:0;inset-inline:0;padding:var(--sp-3) var(--sp-4);
+  font-size:.72rem;color:var(--ink-3);text-align:end}
+.photo .ptx{position:absolute;inset-block-start:50%;transform:translateY(-50%);
+  inset-inline-start:var(--sp-5);max-width:52%}
+.photo .ptx h3{margin:0 0 4px;font-size:1.15rem}
+.photo .ptx p{margin:0;font-size:.88rem;color:var(--ink-2)}
+[dir="rtl"] .photo .scrim{background:linear-gradient(270deg,color-mix(in srgb,var(--surface-1) 88%,transparent) 0 38%,transparent 78%)}
+@media(max-width:600px){ .photo img{aspect-ratio:16/10} .photo .ptx{max-width:70%;inset-inline-start:var(--sp-4)} }
+
+@media (prefers-reduced-motion: reduce){
+  .heroart,.privscene{animation:none !important}
+}
+@media print{ .heroart,.triart,.banner,.footart,.dotfield{display:none !important} }
+
+/* artwork needs a touch more presence on the dark surface */
+:root[data-theme="dark"] .heroart{opacity:1}
+:root[data-theme="dark"] .triart,
+:root[data-theme="dark"] .cardart{opacity:1}
+:root[data-theme="dark"] .bart,
+:root[data-theme="dark"] .pa,
+:root[data-theme="dark"] .footart,
+:root[data-theme="dark"] .privscene{filter:saturate(1.08)}

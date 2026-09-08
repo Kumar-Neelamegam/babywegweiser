@@ -1,0 +1,177 @@
+<svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="gWarm" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="var(--art-a)"/><stop offset="1" stop-color="var(--art-b)"/></linearGradient>
+<linearGradient id="gMint" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="var(--art-leaf)"/><stop offset="1" stop-color="var(--art-leaf2)"/></linearGradient>
+<linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="var(--art-sky)"/><stop offset="1" stop-color="var(--art-sky2)"/></linearGradient>
+<radialGradient id="gGlow" cx="35%" cy="30%" r="75%">
+  <stop offset="0" stop-color="var(--art-b)"/><stop offset="1" stop-color="var(--art-a)"/></radialGradient>
+
+
+<!-- the baby-in-the-round motif, used at several sizes -->
+<symbol id="a-womb" viewBox="0 0 160 160">
+  <circle cx="80" cy="80" r="66" fill="url(#gGlow)" opacity=".55"/>
+  <circle cx="80" cy="80" r="66" fill="none" stroke="var(--art-a)" stroke-width="2" opacity=".55"/>
+  <circle cx="80" cy="80" r="52" fill="none" stroke="var(--art-a)" stroke-width="1.2" opacity=".3" stroke-dasharray="3 6"/>
+  <g fill="none" stroke="var(--art-line)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="66" cy="60" r="16" fill="var(--art-skin)" stroke="none"/>
+    <path d="M78 68c17-2 27 16 21 32-6 16-26 22-38 12-10-8-10-20-4-28" fill="var(--art-skin)" stroke="none"/>
+    <path d="M78 68c17-2 27 16 21 32-6 16-26 22-38 12-10-8-10-20-4-28"/>
+    <circle cx="66" cy="60" r="16"/>
+    <path d="M70 82c8 4 12 10 10 16"/>
+    <path d="M88 104c6-6 9-13 7-19"/>
+  </g>
+  <circle cx="60" cy="58" r="2.1" fill="var(--art-line)"/>
+  <path d="M56 66c3 2 6 2 9 0" fill="none" stroke="var(--art-line)" stroke-width="2.4" stroke-linecap="round"/>
+</symbol>
+
+<!-- hero scene (anchored to the right edge) -->
+<symbol id="a-hero" viewBox="0 0 300 240">
+  <g transform="translate(28 24)">
+    <path d="M0 96a96 96 0 0 1 96-96" fill="none" stroke="var(--art-a)" stroke-width="2.6" opacity=".38"/>
+    <path d="M20 96A76 76 0 0 1 96 20" fill="none" stroke="var(--art-leaf)" stroke-width="2.6" opacity=".4"/>
+    <path d="M40 96a56 56 0 0 1 56-56" fill="none" stroke="var(--art-a)" stroke-width="2.6" opacity=".26"/>
+  </g>
+  <g opacity=".7" fill="var(--art-a)">
+    <circle cx="24" cy="150" r="4"/><circle cx="46" cy="196" r="2.6"/><circle cx="16" cy="98" r="2.2"/>
+    <circle cx="252" cy="34" r="3"/><circle cx="278" cy="72" r="2"/>
+  </g>
+  <use href="#a-womb" x="86" y="52" width="176" height="176"/>
+  <g transform="translate(30 176)" opacity=".85">
+    <path d="M0 46C0 22 16 6 40 2" fill="none" stroke="var(--art-leaf2)" stroke-width="2.8" stroke-linecap="round"/>
+    <path d="M40 2c-2 16-11 25-25 27C16 13 26 4 40 2z" fill="url(#gMint)"/>
+  </g>
+</symbol>
+
+<!-- trimester scenes -->
+<symbol id="a-tri1" viewBox="0 0 120 96">
+  <circle cx="60" cy="56" r="30" fill="url(#gSky)" opacity=".5"/>
+  <path d="M60 82V50" stroke="var(--art-leaf2)" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+  <path d="M60 54c-2-14-12-21-24-21 0 14 9 22 24 21z" fill="url(#gMint)"/>
+  <path d="M60 60c2-11 10-17 20-17 0 11-8 18-20 17z" fill="url(#gMint)" opacity=".75"/>
+  <circle cx="60" cy="40" r="4" fill="var(--art-a)" opacity=".8"/>
+</symbol>
+<symbol id="a-tri2" viewBox="0 0 120 96">
+  <circle cx="60" cy="52" r="32" fill="url(#gGlow)" opacity=".45"/>
+  <g transform="translate(60 52)">
+    <g fill="url(#gWarm)" opacity=".9">
+      <ellipse rx="9" ry="17" cy="-16"/><ellipse rx="9" ry="17" cy="16"/>
+      <ellipse rx="17" ry="9" cx="-16"/><ellipse rx="17" ry="9" cx="16"/>
+    </g>
+    <circle r="7" fill="var(--art-leaf)"/>
+  </g>
+  <path d="M22 84c14-8 26-8 38 0" fill="none" stroke="var(--art-leaf2)" stroke-width="2.6" stroke-linecap="round" opacity=".7"/>
+</symbol>
+<symbol id="a-tri3" viewBox="0 0 120 96">
+  <circle cx="60" cy="50" r="30" fill="url(#gGlow)" opacity=".45"/>
+  <path d="M74 30a22 22 0 1 1-24 34 26 26 0 0 0 24-34z" fill="url(#gWarm)"/>
+  <g fill="var(--art-a)"><circle cx="34" cy="30" r="2.6"/><circle cx="90" cy="60" r="2"/><circle cx="42" cy="70" r="1.8"/></g>
+  <path d="M50 84h22" stroke="var(--art-leaf2)" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+
+<!-- section banners -->
+<symbol id="a-nutrition" viewBox="0 0 160 96">
+  <path d="M28 46h104a52 52 0 0 1-104 0z" fill="url(#gMint)" opacity=".9"/>
+  <path d="M20 46h120" stroke="var(--art-line)" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+  <circle cx="62" cy="34" r="13" fill="url(#gWarm)"/>
+  <circle cx="92" cy="30" r="9" fill="var(--art-leaf)" opacity=".85"/>
+  <path d="M108 36c8-4 12-10 11-18-9 1-14 7-11 18z" fill="url(#gMint)"/>
+  <path d="M46 88c18-8 50-8 68 0" fill="none" stroke="var(--art-a)" stroke-width="2.4" stroke-linecap="round" opacity=".5"/>
+</symbol>
+<symbol id="a-todo" viewBox="0 0 160 96">
+  <rect x="42" y="12" width="76" height="76" rx="10" fill="url(#gSky)" opacity=".55"/>
+  <rect x="42" y="12" width="76" height="76" rx="10" fill="none" stroke="var(--art-line)" stroke-width="3"/>
+  <rect x="66" y="4" width="28" height="16" rx="6" fill="var(--art-a)"/>
+  <g stroke="var(--art-line)" stroke-width="3" stroke-linecap="round" fill="none">
+    <path d="M56 38l6 6 12-13"/><path d="M56 60l6 6 12-13"/></g>
+  <path d="M84 40h22M84 62h22" stroke="var(--art-a)" stroke-width="3.4" stroke-linecap="round" opacity=".6"/>
+</symbol>
+<symbol id="a-remind" viewBox="0 0 160 96">
+  <circle cx="80" cy="48" r="34" fill="url(#gGlow)" opacity=".4"/>
+  <path d="M62 56V44a18 18 0 1 1 36 0v12l5 8H57z" fill="url(#gWarm)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M72 70a8 8 0 0 0 16 0" fill="none" stroke="var(--art-line)" stroke-width="3" stroke-linecap="round"/>
+  <g stroke="var(--art-a)" stroke-width="2.6" stroke-linecap="round" opacity=".65">
+    <path d="M34 34c-4 6-4 14 0 20"/><path d="M126 34c4 6 4 14 0 20"/></g>
+</symbol>
+<symbol id="a-privacy" viewBox="0 0 160 120">
+  <path d="M80 10l42 15v30c0 26-19 43-42 50-23-7-42-24-42-50V25z" fill="url(#gMint)" opacity=".5"/>
+  <path d="M80 10l42 15v30c0 26-19 43-42 50-23-7-42-24-42-50V25z" fill="none" stroke="var(--art-line)" stroke-width="3.4" stroke-linejoin="round"/>
+  <rect x="62" y="52" width="36" height="28" rx="8" fill="var(--art-line)"/>
+  <path d="M69 52v-8a11 11 0 0 1 22 0v8" fill="none" stroke="var(--art-line)" stroke-width="3.4" stroke-linecap="round"/>
+  <circle cx="80" cy="64" r="4.4" fill="var(--art-skin)"/>
+  <g stroke="var(--art-a)" stroke-width="2.4" opacity=".6" stroke-linecap="round">
+    <path d="M18 40h10M132 40h10M22 74h8M130 74h8"/></g>
+</symbol>
+<symbol id="a-calc" viewBox="0 0 160 96">
+  <rect x="46" y="10" width="52" height="76" rx="10" fill="url(#gSky)" opacity=".5" stroke="var(--art-line)" stroke-width="3"/>
+  <rect x="56" y="20" width="32" height="14" rx="4" fill="var(--art-a)" opacity=".8"/>
+  <g fill="var(--art-line)"><circle cx="60" cy="48" r="3"/><circle cx="72" cy="48" r="3"/><circle cx="84" cy="48" r="3"/>
+    <circle cx="60" cy="62" r="3"/><circle cx="72" cy="62" r="3"/><circle cx="84" cy="62" r="3"/></g>
+  <circle cx="118" cy="60" r="16" fill="url(#gWarm)"/>
+  <path d="M113 60h10M118 53v14" stroke="var(--art-line)" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+<symbol id="a-empty" viewBox="0 0 160 110">
+  <path d="M26 84h108" stroke="var(--art-a)" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+  <path d="M34 76l24-24 18 14 26-32" fill="none" stroke="var(--art-line)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="102" cy="34" r="5" fill="var(--art-a)"/>
+  <path d="M120 84V62" stroke="var(--art-leaf2)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M120 66c-1-10-8-15-17-15 0 10 6 16 17 15z" fill="url(#gMint)"/>
+</symbol>
+<symbol id="a-family" viewBox="0 0 170 116">
+  <circle cx="60" cy="30" r="18" fill="var(--art-skin)" stroke="var(--art-line)" stroke-width="3.2"/>
+  <path d="M42 26c0-11 8-18 18-18s18 7 18 18c-6-5-12-7-18-7s-12 2-18 7z" fill="var(--art-line)"/>
+  <path d="M32 110c0-32 12-50 28-50s28 18 28 50z" fill="url(#gWarm)" stroke="var(--art-line)" stroke-width="3.2" stroke-linejoin="round"/>
+  <ellipse cx="112" cy="76" rx="26" ry="20" transform="rotate(-16 112 76)" fill="url(#gMint)" stroke="var(--art-line)" stroke-width="3.2"/>
+  <circle cx="126" cy="60" r="12" fill="var(--art-skin)" stroke="var(--art-line)" stroke-width="3.2"/>
+  <path d="M121 59h.02M131 58h.02" stroke="var(--art-line)" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M121 65c3 2 6 2 9-1" fill="none" stroke="var(--art-line)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M84 72c8-4 14-3 20 1" fill="none" stroke="var(--art-line)" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M146 26c4-5 12-2 12 5 0 6-8 11-12 14-4-3-12-8-12-14 0-7 8-10 12-5z" fill="url(#gWarm)" opacity=".9"/>
+</symbol>
+
+<!-- calculator card corners -->
+<symbol id="a-c-due" viewBox="0 0 120 96">
+  <rect x="22" y="20" width="64" height="58" rx="10" fill="url(#gSky)" opacity=".55" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M22 38h64M38 14v12M70 14v12" stroke="var(--art-line)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M60 52c3-4 9-2 9 4 0 5-6 9-9 12-3-3-9-7-9-12 0-6 6-8 9-4z" fill="url(#gWarm)"/>
+</symbol>
+<symbol id="a-c-work" viewBox="0 0 120 96">
+  <rect x="18" y="30" width="62" height="46" rx="9" fill="url(#gMint)" opacity=".55" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M38 30v-5a8 8 0 0 1 8-8h6a8 8 0 0 1 8 8v5" fill="none" stroke="var(--art-line)" stroke-width="3"/>
+  <circle cx="88" cy="60" r="18" fill="var(--art-b)" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M88 50v10l7 4" stroke="var(--art-line)" stroke-width="3" stroke-linecap="round" fill="none"/>
+</symbol>
+<symbol id="a-c-coin" viewBox="0 0 120 96">
+  <ellipse cx="52" cy="70" rx="30" ry="10" fill="url(#gWarm)" opacity=".5"/>
+  <circle cx="52" cy="48" r="24" fill="url(#gWarm)" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M60 40a11 11 0 1 0 0 17M44 46h14M44 51h14" stroke="var(--art-line)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+  <circle cx="88" cy="66" r="13" fill="var(--art-b)" stroke="var(--art-line)" stroke-width="3"/>
+</symbol>
+<symbol id="a-c-gift" viewBox="0 0 120 96">
+  <rect x="26" y="40" width="62" height="40" rx="7" fill="url(#gMint)" opacity=".6" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M26 54h62M57 40v40" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M57 40c-10 0-16-4-16-9a8 8 0 0 1 16 0 8 8 0 0 1 16 0c0 5-6 9-16 9z" fill="url(#gWarm)" stroke="var(--art-line)" stroke-width="3" stroke-linejoin="round"/>
+</symbol>
+
+<!-- to-do phase headers -->
+<symbol id="a-p-before" viewBox="0 0 96 80">
+  <circle cx="48" cy="44" r="26" fill="url(#gSky)" opacity=".45"/>
+  <path d="M48 62V40" stroke="var(--art-leaf2)" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M48 44c-2-12-10-18-21-18 0 12 8 19 21 18z" fill="url(#gMint)"/>
+  <circle cx="62" cy="30" r="7" fill="url(#gWarm)"/>
+</symbol>
+<symbol id="a-p-during" viewBox="0 0 96 80">
+  <circle cx="44" cy="42" r="26" fill="url(#gGlow)" opacity=".45"/>
+  <path d="M30 20v14a12 12 0 0 0 24 0V20" fill="none" stroke="var(--art-line)" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M42 58v6a10 10 0 0 0 20 0v-4" fill="none" stroke="var(--art-line)" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="66" cy="54" r="7" fill="url(#gWarm)" stroke="var(--art-line)" stroke-width="3"/>
+</symbol>
+<symbol id="a-p-after" viewBox="0 0 96 80">
+  <path d="M18 52a22 22 0 0 1 44 0z" fill="url(#gWarm)" stroke="var(--art-line)" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M14 52h52" stroke="var(--art-line)" stroke-width="3.2" stroke-linecap="round"/>
+  <circle cx="26" cy="64" r="6" fill="none" stroke="var(--art-line)" stroke-width="3"/>
+  <circle cx="54" cy="64" r="6" fill="none" stroke="var(--art-line)" stroke-width="3"/>
+  <path d="M62 30c3-4 9-2 9 4 0 5-6 8-9 11-3-3-9-6-9-11 0-6 6-8 9-4z" fill="url(#gMint)"/>
+</symbol>
+</defs></svg>

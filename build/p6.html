@@ -1,0 +1,320 @@
+<script>
+/* ==========================================================================
+   VISUAL ENHANCEMENT LAYER — icons, illustrations, light motion
+   Layered on top of the base app: wraps the render functions instead of
+   rewriting them, so the data logic stays untouched.
+   ========================================================================== */
+const RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function ic(n,cls){return `<svg class="ic ${cls||""}" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${n}"/></svg>`}
+function bdg(n,tone){return `<span class="badge ${tone||""}">${ic(n)}</span>`}
+
+const TABIC={dash:"gauge",track:"baby",todo:"checks",diet:"apple",calc:"calc",remind:"bell",priv:"shield"};
+const HEADIC={
+ timelineTitle:["cal","sky"], growthTitle:["chart","sky"], moneyTitle:["euro","mint"],
+ trackTitle:["baby","plum"], logTitle:["scale","sky"], kickTitle:["foot","plum"],
+ todoTitle:["checks","mint"], dietTitle:["utensils","sun"], remTitle:["bell","plum"],
+ privTitle:["shield","mint"], srcTitle:["doc","sky"], ratesT:["euro","mint"],
+ calcDueT:["cal","sky"], calcMsT:["briefcase","sun"], calcWgT:["euro","mint"], calcKbgT:["euro","mint"],
+ cardNext:["clock","sun"], cardWeekFocus:["spark","plum"]
+};
+const TODOIC={
+ b1:"leaf",b2:"shield",b3:"check",b4:"ban",b5:"flask",b6:"briefcase",
+ d1:"steth",d2:"steth",d3:"drop",d4:"briefcase",d5:"steth",d6:"baby",d7:"pin",d8:"flask",
+ d9:"users",d10:"steth",d11:"briefcase",d12:"euro",d13:"gift",d14:"steth",d15:"doc",
+ a1:"doc",a2:"pin",a3:"shield",a4:"euro",a5:"euro",a6:"users",a7:"briefcase",a8:"baby",
+ a9:"checks",a10:"heart",a11:"shield",a12:"pin"
+};
+const STATIC_=["baby","spark","clock","cal"];
+const MEALIC=["🌅","🍎","🍲","🥕","🌙","ℹ️","ℹ️"];
+
+/* ---------- tabs & headings ---------- */
+function iconTabs(){ $$("#tabs .tab").forEach(b=>{ if(b.querySelector("svg")) return;
+  b.insertAdjacentHTML("afterbegin", ic(TABIC[b.dataset.v]||"info")); }); }
+function iconHeads(){
+  $$(".section-head").forEach(h=>{
+    if(h.querySelector(".badge")) return;
+    const hd=h.querySelector("h2,h3"); if(!hd) return;
+    let key=hd.getAttribute("data-i");
+    if(!key){ const c=h.closest("[id]"); key=c?c.id:null; }
+    const m=HEADIC[key]; if(!m) return;
+    h.insertAdjacentHTML("afterbegin", bdg(m[0],m[1]));
+  });
+}
+function iconStrip(){
+  const ps=$(".privacy-strip");
+  if(ps && !ps.querySelector("svg")){
+    if(ps.firstChild && ps.firstChild.nodeType===3) ps.firstChild.textContent="";
+    ps.insertAdjacentHTML("afterbegin", ic("lock"));
+  }
+  $$("#hero .stat").forEach((s,i)=>{ const k=s.querySelector(".k");
+    if(k && !k.querySelector("svg")) k.insertAdjacentHTML("afterbegin", ic(STATIC_[i%4])+" "); });
+}
+
+/* ---------- reveal on scroll ---------- */
+let _io;
+function reveal(){
+  if(RM) return;
+  if(!_io) _io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add("in"); _io.unobserve(e.target); } }),{threshold:.06});
+  $$(".card,.hero").forEach(el=>{ if(el.dataset.rv) return; el.dataset.rv="1"; el.classList.add("reveal"); _io.observe(el); });
+  clearTimeout(window.__rvFallback);
+  window.__rvFallback=setTimeout(()=>$$(".reveal").forEach(e=>e.classList.add("in")),2200);
+}
+
+/* ---------- count-up numbers ---------- */
+function countUp(){
+  if(RM) return;
+  $$("#hero .stat .v").forEach(el=>{
+    const txt=(el.textContent||"").trim();
+    if(!/^\d+$/.test(txt)) return;
+    if(el.dataset.cu===txt) return; el.dataset.cu=txt;
+    const target=+txt; if(target===0){el.textContent="0";return;}
+    let t0=null;
+    const step=ts=>{ if(!t0)t0=ts; const p=Math.min(1,(ts-t0)/850);
+      el.textContent=Math.round(target*(1-Math.pow(1-p,3)));
+      if(p<1) requestAnimationFrame(step); else el.textContent=txt; };
+    el.textContent="0"; requestAnimationFrame(step);
+  });
+}
+
+/* ---------- progress ring animation ---------- */
+function ringAnim(){
+  const c=$("#hero svg circle:nth-of-type(2)"); if(!c) return;
+  const to=c.getAttribute("stroke-dashoffset"); if(c.dataset.a===to) return; c.dataset.a=to;
+  c.classList.add("prog");
+  if(RM) return;
+  c.setAttribute("stroke-dashoffset", c.getAttribute("stroke-dasharray"));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>c.setAttribute("stroke-dashoffset",to)));
+}
+
+/* ---------- trimester banner ---------- */
+const TRIEMO=["🌱","🌸","🍼"];
+function triBanner(){
+  let el=$("#triBanner");
+  if(!el){ el=document.createElement("div"); el.id="triBanner"; el.className="tribar"; $("#hero").after(el); }
+  const w=currentWeek();
+  const bounds=[[1,13],[14,27],[28,40]];
+  el.innerHTML=[1,2,3].map(i=>{
+    const [a,b]=bounds[i-1];
+    const act=w&&w>=a&&w<=b;
+    let p=0; if(w){ p=w<a?0:(w>b?1:(w-a+1)/(b-a+1)); }
+    return `<div class="triseg ${act?"active":""}" data-i="${i}" data-p="${p}">
+      <span class="fill"></span><span class="emo">${TRIEMO[i-1]}</span>
+      <div class="tl">${esc(t()["tri"+i])}</div>
+      <div class="tt">${esc(t()["tri"+i+"Name"])}</div>
+      <div class="tw">${esc(t()["tri"+i+"Range"])}${act?" · "+esc(t().youAreHere):""}</div></div>`;
+  }).join("");
+  requestAnimationFrame(()=>$$("#triBanner .triseg").forEach(s=>{
+    s.querySelector(".fill").style.transform=`scaleX(${RM?s.dataset.p:s.dataset.p})`; }));
+}
+
+/* ---------- timeline + growth chart motion ---------- */
+function chartAnim(){
+  if(RM){ $$("#timelineChart g.msg").forEach(g=>g.classList.add("in")); return; }
+  $$("#timelineChart g.msg").forEach((g,i)=>{ g.classList.remove("in");
+    setTimeout(()=>g.classList.add("in"), 40+i*26); });
+  ["#growthChart","#logChart"].forEach(sel=>{
+    $$(sel+" path").forEach(p=>{
+      if(p.getAttribute("fill")!=="none") return;
+      let len=0; try{ len=p.getTotalLength(); }catch(e){ return; }
+      if(!len) return;
+      p.style.transition="none";
+      p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        p.style.transition="stroke-dashoffset 1.3s cubic-bezier(.22,.9,.28,1)";
+        p.style.strokeDashoffset="0"; }));
+    });
+  });
+}
+
+/* ---------- tracker: orb, ruler, week strip ---------- */
+let _lastWeek=null;
+function orbify(){
+  const fe=$("#fruitEmoji"); if(!fe || fe.closest(".orb")) return;
+  const orb=document.createElement("div"); orb.className="orb";
+  fe.classList.remove("fruit-emoji"); fe.classList.add("fe");
+  fe.parentNode.insertBefore(orb,fe); orb.appendChild(fe);
+  orb.insertAdjacentHTML("beforeend",'<span class="wk" id="orbWk"></span>');
+}
+function trackPolish(){
+  orbify();
+  const w=+$("#weekSlider").value, d=WEEKS.find(x=>x.w===w)||WEEKS[0];
+  const orb=$(".orb"), wk=$("#orbWk");
+  if(wk) wk.textContent=t().weekOf+" "+w;
+  if(orb && _lastWeek!==w && !RM){ orb.classList.remove("pop"); void orb.offsetWidth; orb.classList.add("pop"); }
+  _lastWeek=w;
+  // length ruler
+  let r=$("#ruler");
+  if(!r){ r=document.createElement("div"); r.id="ruler"; r.className="ruler"; $("#sizeBars").after(r); }
+  const pct=Math.min(100,(d.l/51.2)*100);
+  r.innerHTML=`<div class="track"><div class="bar" style="width:${pct}%"></div></div>
+    <div class="lbl"><span>${ic("ruler")} ${d.l} cm</span><span>${esc(t().endSize)}</span></div>`;
+  // week strip
+  let s=$("#weekStrip");
+  if(!s){ s=document.createElement("div"); s.id="weekStrip"; s.className="weekstrip"; $("#weekNote").before(s); }
+  const cw=currentWeek();
+  if(s.dataset.k!==S.lang+"|"+cw){ s.dataset.k=S.lang+"|"+cw;
+    s.innerHTML=WEEKS.map(x=>`<button class="ws ${x.w===cw?"now":""}" data-w="${x.w}" title="${esc(LX(x))}">
+      <span class="e">${x.e}</span><span class="n">${x.w}</span></button>`).join("");
+    $$("#weekStrip .ws").forEach(b=>b.onclick=()=>{ const sl=$("#weekSlider"); sl.value=b.dataset.w; sl.dispatchEvent(new Event("input")); });
+  }
+  $$("#weekStrip .ws").forEach(b=>b.classList.toggle("on", +b.dataset.w===w));
+  const on=$("#weekStrip .ws.on");
+  if(on && on.offsetParent && on.dataset.sc!=="1"){ on.dataset.sc="1";
+    on.scrollIntoView({block:"nearest",inline:"center",behavior:RM?"auto":"smooth"}); }
+  $$("#weekStrip .ws").forEach(b=>{ if(!b.classList.contains("on")) delete b.dataset.sc; });
+}
+
+/* ---------- personal log empty state ---------- */
+function logPolish(){
+  const svg=$("#logChart"), leg=$("#logLegend");
+  const has=S.log.some(x=>x.w||x.s);
+  let em=$("#logEmpty");
+  if(!has){
+    svg.style.display="none";
+    if(!em){ em=document.createElement("div"); em.id="logEmpty"; em.className="empty"; svg.parentElement.after(em); }
+    em.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"
+        stroke-linecap="round" stroke-linejoin="round" style="color:var(--brand)"><use href="#i-chart"/></svg>
+      <div style="font-size:.9rem;max-width:280px;margin:0 auto">${esc(t().logEmpty)}</div>`;
+    em.style.display="";
+    if(leg) leg.innerHTML="";
+  } else {
+    svg.style.display="";
+    if(em) em.style.display="none";
+  }
+}
+
+/* ---------- mini orb for the week card ---------- */
+function focusOrb(){
+  const c=$("#cardWeekFocus"); if(!c) return;
+  const big=[...c.querySelectorAll("div")].find(d=>d.style && d.style.fontSize==="46px");
+  if(!big || big.classList.contains("miniorb")) return;
+  big.classList.add("miniorb");
+  big.style.cssText="width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:38px;flex:0 0 auto;"+
+    "background:radial-gradient(circle at 32% 28%, color-mix(in srgb,var(--brand) 22%,transparent), transparent 62%), var(--surface-2);"+
+    "border:1px solid var(--hairline)";
+}
+
+/* ---------- to-do polish ---------- */
+function todoPolish(){
+  $$("#todoList .todo").forEach(li=>{
+    const cb=li.querySelector("input[type=checkbox]"), tt=li.querySelector(".t");
+    if(!cb||!tt||tt.querySelector("svg")) return;
+    tt.insertAdjacentHTML("afterbegin", ic(TODOIC[cb.dataset.id]||"check")+" ");
+  });
+  const head=$("#v-todo .section-head");
+  let bar=$("#todoBar");
+  if(!bar && head){ bar=document.createElement("div"); bar.id="todoBar"; bar.className="progwrap";
+    bar.innerHTML="<i></i>"; head.after(bar); }
+  if(bar){ const d=Object.keys(S.done).length; bar.querySelector("i").style.width=(d/TODO.length*100)+"%"; }
+  // sparkle on completing
+  $$("#todoList input[type=checkbox]").forEach(cb=>{
+    if(cb.dataset.sp) return; cb.dataset.sp="1";
+    cb.addEventListener("change",e=>{ if(!e.target.checked||RM) return;
+      const r=e.target.getBoundingClientRect();
+      ["✨","💫","⭐"].forEach((s,i)=>{ const el=document.createElement("span");
+        el.className="spark"; el.textContent=s;
+        el.style.left=(r.left+r.width/2)+"px"; el.style.top=r.top+"px";
+        el.style.setProperty("--dx",((i-1)*26)+"px");
+        document.body.appendChild(el); setTimeout(()=>el.remove(),900); });
+    });
+  });
+}
+
+/* ---------- richer diet view ---------- */
+window.renderDiet=function(){
+  const cw=currentWeek(); const cur=S.diet.tri||(cw?triOf(cw):1);
+  $("#dietTri").innerHTML=[1,2,3].map(i=>`<button class="chip" data-t="${i}" aria-pressed="${cur===i}">${TRIEMO[i-1]} ${esc(t()["tri"+i])}</button>`).join("");
+  $$("#dietTri .chip").forEach(b=>b.onclick=()=>{S.diet.tri=+b.dataset.t;save();renderDiet();});
+  $("#dietPref").innerHTML=DIETPREF.map(([k,n])=>`<button class="chip" data-p="${k}" aria-pressed="${S.diet.pref===k}">${esc(LX(n))}</button>`).join("");
+  $$("#dietPref .chip").forEach(b=>b.onclick=()=>{S.diet.pref=b.dataset.p;save();renderDiet();});
+  const D=DIET[cur], day=DIETDAY[S.diet.pref];
+  $("#dietBody").innerHTML=`
+   <div class="kcalcard">${bdg("flask","sun")}<div><div class="tiny" style="font-weight:700;text-transform:uppercase;letter-spacing:.05em">${esc(t().dietKcal)}</div>
+     <div style="font-weight:600">${esc(LX(D.kcal))}</div></div></div>
+   <div class="dietgrid" style="margin-top:16px">
+     <div class="panel good"><h3>${bdg("leaf","mint")} ${esc(t().dietEat)}</h3>
+       ${LX(D.eat).map(x=>`<div class="li2 g">${ic("check")}<span>${esc(x)}</span></div>`).join("")}</div>
+     <div class="panel bad"><h3>${bdg("ban","sun")} ${esc(t().dietAvoid)}</h3>
+       ${LX(D.avoid).map(x=>`<div class="li2 b">${ic("alert")}<span>${esc(x)}</span></div>`).join("")}</div>
+   </div>
+   <div class="panel" style="margin-top:16px"><h3>${bdg("utensils","plum")} ${esc(t().dietDay)}</h3>
+     ${LX(day).map((x,i)=>`<div class="meal"><span class="me">${MEALIC[i]||"🍽"}</span><span>${esc(x)}</span></div>`).join("")}</div>
+   <div class="note warn" style="margin-top:16px">${ic("info")} ${esc(t().dietDisc)}
+     <a href="${L.gesund}" target="_blank" rel="noopener noreferrer">gesundheit.gv.at ${ic("ext")}</a></div>`;
+};
+
+/* ---------- richer money view ---------- */
+window.renderMoney=function(){
+  const rows=[
+   ["euro","mint",t().mWgT,t().mWgD,32,L.wochengeld,t().mWgA+"/"+t().mWgA,t().mWgU+"/"+t().mWgU],
+   ["users","plum",t().mFzT,t().mFzD,40,L.bka,"€54,87/€54.87",t().mFzU+"/"+t().mFzU],
+   ["baby","sky",t().mKbgT,t().mKbgD,48,L.kbg,"€41,14–80,12/€41.14–80.12",t().mKbgU+"/"+t().mKbgU],
+   ["gift","sun",t().mFbT,t().mFbD,41,L.bka,"€138,40/€138.40",t().mFbU+"/"+t().mFbU]];
+  $("#moneyBox").innerHTML=rows.map(([i,tone,n,d,w,u,amt,unit])=>{
+    const dt=dateOfWeek(w);
+    const k=S.lang==="en"?1:0, a=amt.split("/")[k], un=unit.split("/")[k];
+    return `<div class="mrow">${bdg(i,tone)}
+      <div style="flex:1;min-width:0"><div style="font-weight:650">${esc(n)}</div>
+        <div class="tiny">${esc(d)}</div>
+        <div class="meta" style="margin-top:6px">${dt?`<span class="pill">${ic("cal")} ${esc(t().fromDate)}${fmtDate(dt)}</span>`:""}
+        <a class="src" href="${u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ${ic("ext")}</a></div></div>
+      <div class="amt">${esc(a)}<div class="tiny" style="font-weight:500;text-align:end">${esc(un)}</div></div></div>`;
+  }).join("");
+};
+
+/* ---------- privacy illustration ---------- */
+function privPolish(){
+  const b=$("#privBody"); if(!b||b.querySelector(".shieldbig")) return;
+  b.insertAdjacentHTML("afterbegin",`<div style="text-align:center;margin-bottom:12px">
+    <svg class="shieldbig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+      <use href="#i-shield"/></svg></div>`);
+}
+/* ---------- kick ripple ---------- */
+function kickPolish(){
+  const b=$("#kickBtn"); if(!b||b.dataset.rp) return; b.dataset.rp="1";
+  b.addEventListener("click",()=>{ if(RM)return; b.classList.remove("rip"); void b.offsetWidth; b.classList.add("rip"); });
+}
+/* ---------- onboarding polish ---------- */
+const OBIC=[["cal","sky"],["baby","plum"],["pin","mint"],["briefcase","sun"],["shield","mint"]];
+function obPolish(){
+  const sheet=$("#onboard .sheet"); if(!sheet) return;
+  const h=sheet.querySelector("h2"); if(!h||h.dataset.b) return; h.dataset.b="1";
+  const step=$$("#onboard .steps i.on").length-1;
+  const m=OBIC[Math.max(0,Math.min(OBIC.length-1,step))];
+  const wrap=document.createElement("div"); wrap.className="obhead";
+  h.parentNode.insertBefore(wrap,h); wrap.insertAdjacentHTML("afterbegin",bdg(m[0],m[1])); wrap.appendChild(h);
+}
+/* ---------- icons on action buttons ---------- */
+const BTNIC={icsAll:"calcheck",remIcs:"calcheck",remNotify:"bell",printTodo:"print",logPrint:"print",
+ logAdd:"check",expBtn:"dl",impBtn:"ul",delBtn:"trash",kickReset:"x",remAdd:"check",nsBtn:"bell"};
+function btnIcons(){
+  Object.keys(BTNIC).forEach(id=>{ const b=document.getElementById(id);
+    if(b && !b.querySelector("svg")) b.insertAdjacentHTML("afterbegin", ic(BTNIC[id])); });
+  $$("#todoList [data-ics], #remList [data-ric]").forEach(b=>{
+    if(!b.querySelector("svg")) b.insertAdjacentHTML("afterbegin", ic("calcheck")+" "); });
+  $$("#remList [data-rm]").forEach(b=>{
+    if(!b.querySelector("svg")) b.insertAdjacentHTML("afterbegin", ic("trash")+" "); });
+}
+
+/* ---------- master enhance ---------- */
+function enhance(){
+  iconTabs(); iconHeads(); iconStrip(); triBanner();
+  trackPolish(); todoPolish(); privPolish(); kickPolish(); logPolish(); focusOrb();
+  ringAnim(); countUp(); chartAnim(); reveal();
+  $$("#footLinks a").forEach(a=>{ if(!a.querySelector("svg")) a.insertAdjacentHTML("afterbegin", ic("ext")+" "); });
+  const th=$("#themeBtn"); if(th) th.innerHTML = ic(S.theme==="dark"?"sun":"moon");
+  const sb=$("#setupBtn"); if(sb && !sb.querySelector("svg")) sb.insertAdjacentHTML("afterbegin", ic("users")+" ");
+  btnIcons();
+}
+
+/* ---------- wrap the base renderers ---------- */
+const _rAll=renderAll, _rTrack=renderTrack, _rTimeline=renderTimeline, _drawOb=drawOb, _rRem=renderRem;
+window.renderAll=function(){ _rAll(); enhance(); };
+window.renderTrack=function(){ _rTrack(); try{trackPolish();logPolish()}catch(e){} };
+window.renderTimeline=function(){ _rTimeline(); try{chartAnim()}catch(e){} };
+window.drawOb=function(){ _drawOb(); try{obPolish()}catch(e){} };
+window.renderRem=function(){ _rRem(); try{btnIcons()}catch(e){} };
+renderAll();
+if($("#onboard .sheet")) obPolish();
+</script>

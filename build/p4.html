@@ -1,0 +1,298 @@
+<script>
+/* ---------------------------- DIET DATA ---------------------------- */
+const DIET={
+ 1:{kcal:{de:"0 kcal zusätzlich – die Menge zählt jetzt noch nicht, die Qualität schon.",en:"No extra calories yet — quality matters now, quantity doesn't."},
+    eat:{de:["Folsäure 400 µg täglich weiter einnehmen","Jod – jodiertes Speisesalz verwenden","Eisen: Vollkorn, Hülsenfrüchte, dazu Vitamin C (Paprika, Zitrusfrüchte)","Bei Übelkeit: viele kleine Portionen, trockenes Gebäck vor dem Aufstehen","1,5–2 Liter Wasser oder ungesüßter Tee pro Tag"],
+        en:["Keep taking folic acid 400 µg daily","Iodine — use iodised table salt","Iron: wholegrains, pulses, with vitamin C (peppers, citrus)","For nausea: many small portions, dry crackers before getting up","1.5–2 litres of water or unsweetened tea per day"]},
+    avoid:{de:["Alkohol – vollständig, es gibt keine sichere Menge","Rohmilchkäse und Weichkäse mit Rotschmiere (Listerien)","Rohes oder halbrohes Fleisch, Faschiertes, Mettwurst (Toxoplasmose)","Rohe Eier: Tiramisu, selbstgemachte Mayonnaise","Leber und hochdosierte Vitamin-A-Präparate","Koffein auf max. 200 mg/Tag begrenzen (ca. 2 kleine Kaffee)"],
+           en:["Alcohol — completely, there is no safe amount","Raw-milk and washed-rind soft cheeses (listeria)","Raw or rare meat, minced meat, raw sausage (toxoplasmosis)","Raw eggs: tiramisu, homemade mayonnaise","Liver and high-dose vitamin A supplements","Limit caffeine to max. 200 mg/day (about 2 small coffees)"]}},
+ 2:{kcal:{de:"ca. +250 kcal pro Tag – etwa ein Vollkornbrot mit Käse und ein Apfel.",en:"About +250 kcal per day — roughly a wholegrain sandwich with cheese and an apple."},
+    eat:{de:["Kalzium: Joghurt, Hartkäse, Brokkoli, kalziumreiches Mineralwasser","Omega-3 (DHA): 1–2× pro Woche fettreicher Fisch, gut durchgegart","Eisenbedarf steigt – auf Müdigkeit achten, Werte werden beim EKP kontrolliert","Ballaststoffe gegen Verstopfung: Vollkorn, Obst, Gemüse, viel trinken","Regelmäßige Mahlzeiten stabilisieren den Blutzucker vor dem oGTT"],
+        en:["Calcium: yoghurt, hard cheese, broccoli, calcium-rich mineral water","Omega-3 (DHA): oily fish 1–2× per week, well cooked","Iron demand rises — watch for tiredness, levels are checked at the EKP","Fibre against constipation: wholegrains, fruit, vegetables, plenty of fluids","Regular meals stabilise blood sugar before the oGTT"]},
+    avoid:{de:["Roher Fisch, Sushi, kaltgeräucherter Lachs, Räucherforelle","Raubfische mit hohem Quecksilbergehalt (Thunfisch, Schwertfisch, Hai)","Vorgeschnittene Salate und Sprossen ungewaschen","Weiterhin Alkohol, Rohmilchprodukte, rohes Fleisch"],
+           en:["Raw fish, sushi, cold-smoked salmon, smoked trout","Predatory fish high in mercury (tuna, swordfish, shark)","Pre-cut salads and sprouts if unwashed","Still: alcohol, raw-milk products, raw meat"]}},
+ 3:{kcal:{de:"ca. +500 kcal pro Tag – der Magen wird enger, also lieber 5–6 kleine Mahlzeiten.",en:"About +500 kcal per day — with less stomach room, 5–6 small meals work better."},
+    eat:{de:["Eisen und Vitamin B12 im Blick behalten – Depots werden jetzt aufgebaut","Vitamin D über die Wintermonate ärztlich abklären","Bei Sodbrennen: kleine Portionen, nicht flach hinlegen, Fettiges reduzieren","Ausreichend trinken – auch gegen vorzeitige Wehen","Leicht verdauliche Abendmahlzeiten für besseren Schlaf"],
+        en:["Keep an eye on iron and vitamin B12 — stores are being built now","Discuss vitamin D over the winter months with your doctor","For heartburn: small portions, don't lie flat, reduce fatty food","Drink enough — also helps against premature contractions","Light evening meals for better sleep"]},
+    avoid:{de:["Sehr salzreiche Speisen bei Wassereinlagerungen","Große, späte Mahlzeiten (Sodbrennen)","Weiterhin alle Listerien- und Toxoplasmose-Risiken","Nahrungsergänzungen nur nach Rücksprache"],
+           en:["Very salty food if you retain water","Large, late meals (heartburn)","Still all listeria and toxoplasmosis risks","Supplements only after consulting your doctor"]}}
+};
+const DIETDAY={
+ std:{de:["Frühstück: Vollkornbrot mit Butter und Käse, Paradeiser, Tee","Vormittag: Joghurt mit Beeren","Mittag: Gemüselaibchen mit Erdäpfeln und Salat","Nachmittag: Apfel und eine Handvoll Nüsse","Abend: Suppe, Vollkornbrot, gekochtes Ei"],
+      en:["Breakfast: wholegrain bread with butter and cheese, tomato, tea","Morning: yoghurt with berries","Lunch: vegetable patties with potatoes and salad","Afternoon: apple and a handful of nuts","Evening: soup, wholegrain bread, boiled egg"]},
+ veg:{de:["Frühstück: Haferbrei mit Nüssen und Beeren","Vormittag: Vollkornweckerl mit Hummus","Mittag: Linsengulasch mit Vollkornnudeln","Nachmittag: Karotten mit Joghurtdip","Abend: Ofengemüse mit Feta und Kürbiskernöl"],
+      en:["Breakfast: porridge with nuts and berries","Morning: wholegrain roll with hummus","Lunch: lentil goulash with wholegrain pasta","Afternoon: carrots with yoghurt dip","Evening: roast vegetables with feta and pumpkin seed oil"]},
+ vgn:{de:["Frühstück: Haferbrei mit Sojadrink, Leinsamen, Beeren","Vormittag: Vollkornbrot mit Nussmus","Mittag: Kichererbsen-Curry mit Reis und Spinat","Nachmittag: Obst und Kürbiskerne","Abend: Linsensuppe mit Vollkornbrot","Wichtig: B12, Eisen, Jod, DHA und Vitamin D ärztlich kontrollieren lassen"],
+      en:["Breakfast: porridge with soy drink, flaxseed, berries","Morning: wholegrain bread with nut butter","Lunch: chickpea curry with rice and spinach","Afternoon: fruit and pumpkin seeds","Evening: lentil soup with wholegrain bread","Important: have B12, iron, iodine, DHA and vitamin D checked by your doctor"]},
+ hal:{de:["Frühstück: Fladenbrot mit Käse, Oliven, Gurke, Tee","Vormittag: Datteln und Joghurt","Mittag: Hühnereintopf mit Bulgur und Salat (gut durchgegart)","Nachmittag: Obst und Mandeln","Abend: Linsensuppe mit Zitrone und Vollkornbrot"],
+      en:["Breakfast: flatbread with cheese, olives, cucumber, tea","Morning: dates and yoghurt","Lunch: chicken stew with bulgur and salad (well cooked)","Afternoon: fruit and almonds","Evening: lentil soup with lemon and wholegrain bread"]},
+ gd:{de:["Frühstück: Vollkornbrot mit Topfen und Ei (wenig schnelle Kohlenhydrate)","Vormittag: Nüsse und ein kleines Stück Obst","Mittag: Fisch oder Hülsenfrüchte mit Gemüse und Vollkorn","Nachmittag: Gemüsesticks mit Joghurtdip","Abend: Gemüsepfanne mit Ei oder Käse","Bei Schwangerschaftsdiabetes: Plan immer mit der Diätologin abstimmen"],
+     en:["Breakfast: wholegrain bread with quark and egg (few fast carbs)","Morning: nuts and a small piece of fruit","Lunch: fish or pulses with vegetables and wholegrains","Afternoon: vegetable sticks with yoghurt dip","Evening: vegetable pan with egg or cheese","With gestational diabetes: always agree the plan with a dietitian"]}
+};
+const DIETPREF=[["std",{de:"Standard",en:"Standard"}],["veg",{de:"Vegetarisch",en:"Vegetarian"}],["vgn",{de:"Vegan",en:"Vegan"}],["hal",{de:"Halal / ohne Schwein",en:"Halal / no pork"}],["gd",{de:"Schwangerschaftsdiabetes",en:"Gestational diabetes"}]];
+
+/* ---------------------------- OFFICIAL RATES ---------------------------- */
+const RATES=[
+ [{de:"Familienbeihilfe 0–2 Jahre",en:"Familienbeihilfe age 0–2"},"€138,40 / €138.40",L.bka],
+ [{de:"Familienbeihilfe 3–9 Jahre",en:"Familienbeihilfe age 3–9"},"€148,00 / €148.00",L.bka],
+ [{de:"Familienbeihilfe 10–18 Jahre",en:"Familienbeihilfe age 10–18"},"€171,80 / €171.80",L.bka],
+ [{de:"Familienbeihilfe ab 19 Jahren",en:"Familienbeihilfe age 19+"},"€200,40 / €200.40",L.bka],
+ [{de:"Kinderabsetzbetrag (monatlich)",en:"Child tax credit (monthly)"},"€70,90 / €70.90",L.bka],
+ [{de:"Mehrkindzuschlag (monatlich)",en:"Multi-child supplement (monthly)"},"€24,40 / €24.40",L.bka],
+ [{de:"Schulstartgeld (jährlich)",en:"School start bonus (yearly)"},"€121,40 / €121.40",L.bka],
+ [{de:"Kinderbetreuungsgeld pauschal (täglich)",en:"Kinderbetreuungsgeld flat rate (daily)"},"€41,14 / €41.14",L.kbg],
+ [{de:"Kinderbetreuungsgeld einkommensabhängig, max. (täglich)",en:"Kinderbetreuungsgeld income-dependent, max. (daily)"},"€80,12 / €80.12",L.kbg],
+ [{de:"Familienzeitbonus (täglich)",en:"Familienzeitbonus (daily)"},"€54,87 / €54.87",L.bka]
+];
+const STATES=["Wien","Niederösterreich","Oberösterreich","Steiermark","Tirol","Kärnten","Salzburg","Vorarlberg","Burgenland"];
+
+/* ============================== STATE ============================== */
+const SKEY="bw_v1";
+let mem={}, canStore=true;
+try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); }catch(e){ canStore=false; }
+function load(){ try{ return canStore ? JSON.parse(localStorage.getItem(SKEY)||"{}") : mem; }catch(e){ return {}; } }
+function save(){ try{ canStore ? localStorage.setItem(SKEY,JSON.stringify(S)) : (mem=S); }catch(e){} }
+function defaultLang(){
+  const n=((navigator.languages&&navigator.languages[0])||navigator.language||"de").toLowerCase();
+  if(n.startsWith("de")) return "de";
+  if(n.startsWith("tr")) return "tr";
+  if(n.startsWith("ro")||n.startsWith("mo")) return "ro";
+  if(n.startsWith("uk")||n.startsWith("ru")) return "uk";
+  if(/^(bs|hr|sr|sh|me)/.test(n)) return "bs";
+  return "en";
+}
+let S=Object.assign({lang:defaultLang(),theme:"light",due:"",first:null,state:"",work:"",name:"",partner:false,multi:false,
+  done:{},log:[],kicks:[],rem:[],diet:{tri:null,pref:"std"},onboarded:false},load());
+if(!LANGS.some(l=>l[0]===S.lang)) S.lang="de";
+/* merged translation table: every language inherits German for keys it lacks */
+let TM={};
+function rebuildT(){ TM={}; LANGS.forEach(([c])=>{ TM[c]=Object.assign({},T.de,T[c]||{}); }); }
+rebuildT();
+let t=()=>TM[S.lang]||TM.de;
+const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>[...(r||document).querySelectorAll(s)];
+const DAY=864e5;
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function fmtDate(d){ if(!d)return"—"; return new Date(d).toLocaleDateString(LX(LOCALE)||"de-AT",{day:"2-digit",month:"short",year:"numeric"}); }
+function euro(n){ return (S.lang!=="en") ? "€"+n.toLocaleString(LX(LOCALE)||"de-AT",{minimumFractionDigits:2,maximumFractionDigits:2}) : "€"+n.toLocaleString("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+/* derived pregnancy state */
+function dueDate(){ return S.due ? new Date(S.due+"T00:00:00") : null; }
+function daysToDue(){ const d=dueDate(); if(!d) return null; return Math.round((d-startOfToday())/DAY); }
+function startOfToday(){ const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); }
+function currentWeekF(){ const dd=daysToDue(); if(dd===null) return null; return 40-(dd/7); }
+function currentWeek(){ const f=currentWeekF(); if(f===null) return null; return Math.max(1,Math.min(42,Math.floor(f)+1)); }
+function triOf(w){ return w<=13?1 : w<=27?2 : 3; }
+/* date of a given week-from-LMP */
+function dateOfWeek(w){ const d=dueDate(); if(!d) return null; return new Date(d.getTime()-(40-w)*7*DAY); }
+
+/* ============================== I18N RENDER ============================== */
+const TABS=["dash","track","todo","diet","calc","remind","priv"];
+let view="dash";
+function paintStatic(){
+  document.documentElement.lang=S.lang;
+  $$("[data-i]").forEach(el=>{ const k=el.getAttribute("data-i"); if(t()[k]!==undefined) el.textContent=t()[k]; });
+  $("#tabs").innerHTML=TABS.map(id=>`<button class="tab" role="tab" data-v="${id}" aria-selected="${id===view}">${esc(t().tabs[id])}</button>`).join("");
+  $$("#tabs .tab").forEach(b=>b.onclick=()=>go(b.dataset.v));
+  const sel=$("#langSel");
+  if(sel.options.length!==LANGS.length)
+    sel.innerHTML=LANGS.map(([c,n,f])=>`<option value="${c}">${f} ${esc(n)}</option>`).join("");
+  sel.value=S.lang; sel.setAttribute("aria-label",t().langLabel);
+  $("#themeBtn").textContent=S.theme==="dark"?"☀️":"🌙";
+  $("#footLinks").innerHTML=[["gesundheit.gv.at",L.gesund],["oesterreich.gv.at",L.oegv],["Sozialministerium",L.sozmin],["Familienportal (BKA)",L.bka],["ÖGK",L.oegk],["Frühe Hilfen",L.fruehe]]
+    .map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener noreferrer">${n} ↗</a>`).join("");
+}
+function go(v){ view=v; $$(".view").forEach(s=>s.classList.add("hide")); $("#v-"+v).classList.remove("hide");
+  $$("#tabs .tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.v===v)); window.scrollTo({top:0,behavior:"smooth"}); renderAll(); }
+
+/* ============================== TOOLTIP ============================== */
+const tip=$("#tip");
+function showTip(e,html){ tip.innerHTML=html; tip.classList.add("on");
+  const x=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-10), y=Math.max(10,e.clientY-tip.offsetHeight-12);
+  tip.style.left=x+"px"; tip.style.top=y+"px"; }
+function hideTip(){ tip.classList.remove("on"); }
+
+/* ============================== DASHBOARD ============================== */
+function renderHero(){
+  const w=currentWeek(), dd=daysToDue();
+  if(!S.due){
+    $("#hero").innerHTML=`<h1>${esc(t().heroHi)}</h1><p class="muted">${esc(t().noDue)}</p>
+      <button class="btn primary" data-ob="1">${esc(t().setDue)}</button>`;
+    return;
+  }
+  const tri=triOf(w), pct=Math.max(0,Math.min(100,((40-dd/7)/40)*100));
+  const nm=S.name?esc(S.name):"";
+  $("#hero").innerHTML=`
+   <div class="ring-wrap">
+     ${ring(pct,w)}
+     <div style="flex:1;min-width:230px">
+       <h1 style="margin-bottom:2px">${esc(t().heroHi)} ${nm}</h1>
+       <p class="muted" style="margin:0">${esc(t().heroWeek)} <b style="color:var(--ink-1)">${w}</b> ${esc(t().heroSSW)} · ${esc(t()["tri"+tri])}</p>
+     </div>
+   </div>
+   <div class="statrow">
+     <div class="stat"><div class="k">${esc(t().statWeek)}</div><div class="v">${w}</div><div class="s">${esc(t().wkAbbr)} ${w}</div></div>
+     <div class="stat"><div class="k">${esc(t().statTri)}</div><div class="v">${tri}</div><div class="s">${esc(t()["tri"+tri])}</div></div>
+     <div class="stat"><div class="k">${esc(t().statDays)}</div><div class="v">${dd<0?0:dd}</div><div class="s">${Math.max(0,Math.round(dd/7))} ${esc(t().weeksLeft)}</div></div>
+     <div class="stat"><div class="k">${esc(t().statDue)}</div><div class="v" style="font-size:1.15rem;padding-top:8px">${fmtDate(S.due)}</div><div class="s">&nbsp;</div></div>
+   </div>`;
+}
+function ring(pct,w){
+  const r=52,c=2*Math.PI*r;
+  return `<svg width="130" height="130" viewBox="0 0 130 130" role="img" aria-label="${pct.toFixed(0)}%">
+   <circle cx="65" cy="65" r="${r}" fill="none" stroke="var(--grid)" stroke-width="11"/>
+   <circle cx="65" cy="65" r="${r}" fill="none" stroke="var(--brand)" stroke-width="11" stroke-linecap="round"
+     stroke-dasharray="${c}" stroke-dashoffset="${c*(1-pct/100)}" transform="rotate(-90 65 65)"/>
+   <text x="65" y="62" text-anchor="middle" font-size="27" font-weight="700" fill="var(--ink-1)">${w}</text>
+   <text x="65" y="80" text-anchor="middle" font-size="11" fill="var(--ink-2)">${esc(t().wkAbbr)}</text></svg>`;
+}
+function upcoming(n){
+  if(!S.due) return [];
+  const today=startOfToday();
+  return TODO.map(o=>({o,d:dateOfWeek(o.w)})).filter(x=>x.d&&x.d>=today&&!S.done[x.o.id])
+    .sort((a,b)=>a.d-b.d).slice(0,n);
+}
+function renderNext(){
+  const up=upcoming(4);
+  if(!S.due){ $("#cardNext").innerHTML=`<h2>${esc(t().nextTitle)}</h2><p class="muted">${esc(t().noDue)}</p>`; return; }
+  $("#cardNext").innerHTML=`<div class="section-head"><h2>${esc(t().nextTitle)}</h2></div>`+
+   (up.length?`<ul class="clean">${up.map(({o,d})=>{
+     const dl=Math.round((d-startOfToday())/DAY);
+     const when = dl===0?t().today : dl===1?t().tomorrow : t().inDays.replace("%d",dl);
+     return `<li class="todo"><div class="body"><div class="t">${esc(LX(o)[0])}</div>
+       <div class="d">${fmtDate(d)} · ${esc(when)}</div>
+       <div class="meta"><a class="src" href="${o.u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ↗</a></div></div></li>`;
+   }).join("")}</ul>`:`<p class="muted">${esc(t().nextNone)}</p>`);
+}
+function renderFocus(){
+  const w=currentWeek();
+  if(!S.due){ $("#cardWeekFocus").innerHTML=`<h2>${esc(t().focusTitle)}</h2><p class="muted">${esc(t().noDue)}</p>`; return; }
+  const wd=WEEKS.find(x=>x.w===Math.max(4,Math.min(40,w)))||WEEKS[0];
+  const act=MS.filter(m=>w>=m.a&&w<=m.b&&m.lane===0);
+  $("#cardWeekFocus").innerHTML=`<div class="section-head"><h2>${esc(t().focusTitle)}</h2><span class="pill">${esc(t().wkAbbr)} ${w}</span></div>
+   <div style="display:flex;gap:16px;align-items:center;margin-bottom:12px">
+     <div style="font-size:46px">${wd.e}</div>
+     <div><div style="font-weight:650">${esc(LX(wd))}</div>
+     <div class="tiny">${wd.l} cm · ${wd.g?wd.g+" g":"—"}</div></div></div>
+   ${act.length?`<ul class="clean">${act.map(m=>`<li class="todo"><div class="body"><div class="t">${esc(LX(m))}</div>
+     <div class="meta"><a class="src" href="${m.u}" target="_blank" rel="noopener noreferrer">↗ Quelle</a></div></div></li>`).join("")}</ul>`
+   :`<p class="muted">${esc(t().focusNone)}</p>`}`;
+}
+
+/* ============================== TIMELINE CHART ============================== */
+function renderTimeline(){
+  const W=940, PL=104, PR=16, PT=34, laneGap=16, barH=17, rowGap=6;
+  const x0=-12, x1=92, sx=v=>PL+((v-x0)/(x1-x0))*(W-PL-PR);
+  const lanes=[[],[],[]];
+  MS.forEach(m=>{ // greedy row packing per lane
+    const rows=lanes[m.lane]; let placed=false;
+    for(const row of rows){ if(row[row.length-1].b+3<=m.a){ row.push(m); placed=true; break; } }
+    if(!placed) rows.push([m]);
+  });
+  let y=PT, out="", legendRows=[], laneY=[];
+  const laneNames=[t().laneMed,t().laneLaw,t().laneMoney];
+  lanes.forEach((rows,li)=>{
+    laneY.push(y);
+    out+=`<text x="8" y="${y+12}" font-size="12" font-weight="700" fill="var(--ink-1)">${esc(laneNames[li])}</text>`;
+    rows.forEach(row=>{
+      row.forEach(m=>{
+        const bx=sx(m.a), bw=Math.max(6,sx(m.b)-sx(m.a)-2);
+        out+=`<g class="msg">`;
+        out+=`<rect class="msbar" x="${bx}" y="${y}" width="${bw}" height="${barH}" rx="4" fill="var(--${m.c})"
+           stroke="var(--surface-1)" stroke-width="2" data-i="${MS.indexOf(m)}" tabindex="0" role="img"><title>${esc(LX(m))}</title></rect>`;
+        if(bw>120){ const cid="cl"+MS.indexOf(m);
+          out+=`<clipPath id="${cid}"><rect x="${bx}" y="${y}" width="${bw-8}" height="${barH}"/></clipPath>`;
+          out+=`<text clip-path="url(#${cid})" x="${bx+7}" y="${y+12.5}" font-size="10.5" fill="#fff" style="pointer-events:none">${esc(clip(LX(m),Math.floor((bw-14)/5.9)))}</text>`; }
+        out+=`</g>`;
+      });
+      y+=barH+rowGap;
+    });
+    y+=laneGap;
+  });
+  const H=y+34;
+  // grid + axis
+  let grid="";
+  const ticks=[-12,0,10,20,30,40,53,66,79,92];
+  ticks.forEach(v=>{
+    grid+=`<line x1="${sx(v)}" y1="${PT-12}" x2="${sx(v)}" y2="${H-30}" stroke="var(--grid)" stroke-width="1"/>`;
+    grid+=`<text x="${sx(v)}" y="${H-14}" font-size="10.5" text-anchor="middle" fill="var(--ink-3)">${axLbl(v)}</text>`;
+  });
+  grid+=`<line x1="${sx(40)}" y1="${PT-16}" x2="${sx(40)}" y2="${H-30}" stroke="var(--s8)" stroke-width="2" stroke-dasharray="4 3"/>`;
+  grid+=`<text x="${sx(40)}" y="${PT-20}" font-size="11" font-weight="700" text-anchor="middle" fill="var(--s8)">${esc(t().birth)}</text>`;
+  const cw=currentWeekF();
+  if(cw!==null&&cw>=x0&&cw<=x1){
+    grid+=`<line x1="${sx(cw)}" y1="${PT-16}" x2="${sx(cw)}" y2="${H-30}" stroke="var(--brand)" stroke-width="2"/>`;
+    grid+=`<circle cx="${sx(cw)}" cy="${PT-16}" r="4" fill="var(--brand)"/>`;
+    grid+=`<text x="${sx(cw)}" y="${PT-22}" font-size="11" font-weight="700" text-anchor="middle" fill="var(--brand)">${esc(t().todayS)}</text>`;
+  }
+  const svg=$("#timelineChart");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.setAttribute("aria-label",t().timelineTitle);
+  svg.parentElement.style.minWidth="";
+  svg.innerHTML=grid+out;
+  svg.style.minWidth="700px";
+  $$(".msbar",svg).forEach(r=>{
+    const m=MS[+r.dataset.i];
+    const show=e=>showTip(e,`<b>${esc(LX(m))}</b><span class="tiny">${lbl(m.a)} → ${lbl(m.b)}</span>`);
+    r.addEventListener("mousemove",show); r.addEventListener("mouseenter",show);
+    r.addEventListener("mouseleave",hideTip); r.addEventListener("focus",e=>{const b=r.getBoundingClientRect();showTip({clientX:b.x+b.width/2,clientY:b.y},`<b>${esc(LX(m))}</b>`)});
+    r.addEventListener("blur",hideTip);
+    r.style.cursor="pointer";
+    r.addEventListener("click",()=>window.open(m.u,"_blank","noopener"));
+  });
+  // legend by lane colour meaning
+  $("#timelineLegend").innerHTML=[["s1",t().legEkp],["s7",t().legUs],
+    ["s2",t().legLaw],["s4",t().legDl],
+    ["s6",t().legWg],["s3",t().legFam],["s5",t().legAuth],["s8",t().birth]]
+    .map(([c,n])=>`<span class="li"><span class="swatch" style="background:var(--${c})"></span>${esc(n)}</span>`).join("");
+  // table view
+  $("#timelineTable").innerHTML=`<table class="data"><thead><tr><th>${esc(t().rCol1)}</th><th>${esc(t().colPeriod)}</th><th>${esc(t().colArea)}</th></tr></thead><tbody>`+
+    MS.map(m=>`<tr><td><a href="${m.u}" target="_blank" rel="noopener noreferrer">${esc(LX(m))}</a></td><td>${lbl(m.a)} → ${lbl(m.b)}</td><td>${esc(laneNames[m.lane])}</td></tr>`).join("")+`</tbody></table>`;
+  function clip(s,n){ return s.length>n? s.slice(0,n-1)+"…" : s; }
+  function axLbl(v){ if(v<0) return t().axBefore; if(v===40) return t().birth;
+    if(v>40) return "+"+Math.round((v-40)/4.345)+t().axMonShort; return t().weekOf+" "+v; }
+  function lbl(v){ if(v<0) return t().weeksBefore.replace("%d",-v);
+    if(v<=40) return t().weekOf+" "+v; return t().monthsAfter.replace("%d",Math.round((v-40)/4.345)); }
+}
+
+/* ============================== GROWTH (small multiples, never dual axis) ============================== */
+function renderGrowth(){
+  const W=460,H=280,P={t:24,r:14,b:34,l:44},fh=(H-24)/2;
+  const facets=[{key:"l",lbl:t().growthLen,col:"s1",fmt:v=>v+" cm"},{key:"g",lbl:t().growthWt,col:"s2",fmt:v=>v+" g"}];
+  let out="";
+  facets.forEach((f,fi)=>{
+    const oy=fi*(fh+18), max=Math.max(...WEEKS.map(d=>d[f.key]))*1.08;
+    const sx=w=>P.l+((w-4)/36)*(W-P.l-P.r), sy=v=>oy+P.t+fh-P.t-8-((v/max)*(fh-P.t-8));
+    out+=`<text x="0" y="${oy+12}" font-size="12" font-weight="700" fill="var(--ink-1)">${esc(f.lbl)}</text>`;
+    [0,.5,1].forEach(k=>{ const yy=sy(max*k);
+      out+=`<line x1="${P.l}" y1="${yy}" x2="${W-P.r}" y2="${yy}" stroke="var(--grid)"/>
+            <text x="${P.l-6}" y="${yy+3.5}" font-size="10" text-anchor="end" fill="var(--ink-3)">${Math.round(max*k)}</text>`;});
+    const pts=WEEKS.map(d=>[sx(d.w),sy(d[f.key])]);
+    out+=`<path d="M${pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")}" fill="none" stroke="var(--${f.col})" stroke-width="2" stroke-linejoin="round"/>`;
+    const cw=currentWeek();
+    if(cw&&cw>=4&&cw<=40){ const d=WEEKS.find(x=>x.w===cw);
+      out+=`<circle cx="${sx(cw)}" cy="${sy(d[f.key])}" r="5" fill="var(--${f.col})" stroke="var(--surface-1)" stroke-width="2"/>
+            <text x="${sx(cw)}" y="${sy(d[f.key])-10}" font-size="10.5" font-weight="700" text-anchor="middle" fill="var(--ink-1)">${f.fmt(d[f.key])}</text>`;}
+    if(fi===1) [4,10,16,22,28,34,40].forEach(w=>out+=`<text x="${sx(w)}" y="${oy+fh+8}" font-size="10" text-anchor="middle" fill="var(--ink-3)">${w}</text>`);
+  });
+  const svg=$("#growthChart"); svg.setAttribute("viewBox",`0 0 ${W} ${H+16}`); svg.innerHTML=out;
+  svg.setAttribute("aria-label",t().growthTitle);
+  $("#growthLegend").innerHTML=`<span class="li"><span class="swatch" style="background:var(--s1)"></span>${esc(t().growthLen)}</span>
+    <span class="li"><span class="swatch" style="background:var(--s2)"></span>${esc(t().growthWt)}</span>
+    <span class="li tiny">${esc(t().growthNote)}</span>`;
+}
+
+/* ============================== MONEY ============================== */
+function renderMoney(){
+  const rows=[
+   [{de:"Wochengeld (ÖGK)",en:"Wochengeld (ÖGK)"},{de:"8 Wochen vor bis 8 Wochen nach der Geburt",en:"8 weeks before to 8 weeks after birth"},32,L.wochengeld],
+   [{de:"Familienzeitbonus",en:"Familienzeitbonus"},{de:"€54,87 pro Tag für den zweiten Elternteil",en:"€54.87 per day for the second parent"},40,L.bka],
+   [{de:"Kinderbetreuungsgeld",en:"Kinderbetreuungsgeld"},{de:"€41,14/Tag pauschal oder bis €80,12/Tag einkommensabhängig",en:"€41.14/day flat or up to €80.12/day income-dependent"},48,L.kbg],
+   [{de:"Familienbeihilfe",en:"Familienbeihilfe"},{de:"€138,40 monatlich in den ersten Jahren, meist antragslos",en:"€138.40 monthly in the first years, usually automatic"},41,L.bka]];
+  $("#moneyBox").innerHTML=`<ul class="clean">`+rows.map(([n,d,w,u])=>{
+    const dt=dateOfWeek(w);
+    return `<li class="todo"><div class="body"><div class="t">${esc(LX(n))}</div><div class="d">${esc(LX(d))}</div>
+      <div class="meta">${dt?`<span class="pill">${esc(t().fromDate)}${fmtDate(dt)}</span>`:""}
+      <a class="src" href="${u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ↗</a></div></div></li>`;
+  }).join("")+`</ul>`;
+}
+</script>

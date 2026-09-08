@@ -1,0 +1,150 @@
+/* ==========================================================================
+   PASS 2 — spacing scale, duotone icons, toasts, notification panel
+   ========================================================================== */
+:root{
+  --sp-1:6px; --sp-2:10px; --sp-3:14px; --sp-4:18px; --sp-5:24px; --sp-6:32px;
+  --card-pad:24px; --card-gap:18px;
+}
+@media(max-width:600px){ :root{ --card-pad:16px; --card-gap:14px; } }
+
+/* ---------- duotone icons ---------- */
+.ic{stroke-width:1.7}
+.ic .f{fill:currentColor;stroke:none;opacity:.16}
+.badge .ic .f{opacity:.22}
+:root[data-theme="dark"] .ic .f{opacity:.22}
+.badge{
+  width:40px;height:40px;border-radius:13px;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--brand) 16%,transparent),color-mix(in srgb,var(--brand) 6%,transparent));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
+}
+:root[data-theme="dark"] .badge{box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.badge.sky{background:linear-gradient(140deg,color-mix(in srgb,var(--s1) 17%,transparent),color-mix(in srgb,var(--s1) 6%,transparent))}
+.badge.mint{background:linear-gradient(140deg,color-mix(in srgb,var(--s3) 18%,transparent),color-mix(in srgb,var(--s3) 6%,transparent))}
+.badge.sun{background:linear-gradient(140deg,color-mix(in srgb,var(--s4) 20%,transparent),color-mix(in srgb,var(--s4) 7%,transparent))}
+.badge .ic{width:21px;height:21px}
+
+/* ---------- brand mark ---------- */
+.logo .mark{
+  width:34px;height:34px;border-radius:11px;color:#fff;font-size:0;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--brand) 38%,transparent);
+}
+.logo .mark svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.logo .mark svg .f{fill:#fff;stroke:none;opacity:.3}
+
+/* ==========================================================================
+   SPACING — one consistent rhythm
+   ========================================================================== */
+main{padding:var(--sp-6) 0 calc(var(--sp-6) * 2)}
+.wrap{padding:0 var(--sp-4)}
+@media(max-width:600px){ .wrap{padding:0 var(--sp-3)} main{padding:var(--sp-5) 0 var(--sp-6)} }
+.grid{gap:var(--card-gap)}
+.card{padding:var(--card-pad)}
+.card.tight{padding:var(--sp-4)}
+.hero{padding:var(--sp-5) var(--sp-5) var(--card-pad)}
+@media(max-width:600px){ .hero{padding:var(--sp-4);border-radius:20px} }
+
+.topbar{gap:var(--sp-2);height:62px}
+nav.tabs{gap:var(--sp-1);padding-bottom:var(--sp-3)}
+.privacy-strip{margin:0 auto var(--sp-5);padding:10px 18px}
+
+.section-head{gap:var(--sp-2);margin-bottom:var(--sp-4)}
+.statrow{margin-top:var(--sp-4);gap:var(--sp-3)}
+.stat{padding:var(--sp-3) var(--sp-4)}
+.stat .v{margin-top:3px}
+.ring-wrap{gap:var(--sp-5)}
+.tribar{margin-top:var(--card-gap);gap:var(--sp-3)}
+.triseg{padding:var(--sp-3) var(--sp-4)}
+
+/* list rows: inset padding so hover fills nicely and dividers still run full width */
+.todo{padding:var(--sp-3) var(--sp-2);margin-inline:calc(var(--sp-2) * -1);gap:var(--sp-3)}
+.todo .meta{gap:var(--sp-1);margin-top:9px}
+.todo .d{margin-top:3px}
+.mrow{padding:var(--sp-3) var(--sp-2);margin-inline:calc(var(--sp-2) * -1);gap:var(--sp-3)}
+.li2{padding:var(--sp-2) 0;gap:var(--sp-2)}
+.meal{padding:var(--sp-3) 0;gap:var(--sp-3)}
+.panel{padding:var(--sp-4)}
+.panel h3{margin-bottom:var(--sp-2)}
+.kcalcard{padding:var(--sp-3) var(--sp-4);gap:var(--sp-3)}
+.dietgrid{gap:var(--card-gap)}
+
+.note{padding:var(--sp-3) var(--sp-4);margin:var(--sp-3) 0;border-radius:0 12px 12px 0;line-height:1.5}
+.field{margin-bottom:var(--sp-4)}
+label.f{margin-bottom:7px}
+.chips{gap:9px}
+.chip{padding:9px 15px}
+.legend{gap:var(--sp-2) var(--sp-4);margin-top:var(--sp-3)}
+.accordion{margin-bottom:var(--sp-2)}
+.accordion summary{padding:var(--sp-3) var(--sp-4)}
+.accordion .inner{padding:0 var(--sp-4) var(--sp-4)}
+table.data th,table.data td{padding:var(--sp-2) var(--sp-3)}
+.ruler{margin-top:var(--sp-4)}
+.sizebars{gap:var(--sp-2);margin-top:var(--sp-3)}
+.sizebar{padding:var(--sp-2) var(--sp-3)}
+.weekstrip{padding:var(--sp-3) 2px var(--sp-2);gap:7px}
+.weekslider{margin-top:var(--sp-4)}
+.fruitcard{gap:var(--sp-5)}
+footer{padding:var(--sp-6) 0;margin-top:var(--sp-6)}
+footer .cols{gap:var(--sp-5)}
+.modal .sheet{padding:var(--sp-5)}
+.steps{margin-bottom:var(--sp-4)}
+.obhead{margin-bottom:var(--sp-2)}
+
+/* button rows — replaces one-off inline margins */
+.btnrow{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-block:var(--sp-4)}
+.btnrow.tight{margin-block:var(--sp-3)}
+.btnrow:last-child{margin-block-end:0}
+.card h3+.grid,.btnrow+h3{margin-top:var(--sp-2)}
+
+/* ==========================================================================
+   TOASTS
+   ========================================================================== */
+.toasts{
+  position:fixed;inset-block-end:calc(18px + env(safe-area-inset-bottom));inset-inline:0;z-index:120;
+  display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;padding:0 14px;
+}
+.toast{
+  display:flex;align-items:center;gap:10px;max-width:440px;
+  background:var(--surface-1);color:var(--ink-1);border:1px solid var(--hairline);
+  border-radius:14px;padding:12px 16px;font-size:.9rem;font-weight:550;
+  box-shadow:0 10px 34px rgba(11,11,11,.18);pointer-events:auto;
+  animation:toastIn .34s cubic-bezier(.22,.9,.28,1);
+}
+:root[data-theme="dark"] .toast{box-shadow:0 10px 34px rgba(0,0,0,.6)}
+.toast svg{width:20px;height:20px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.toast.good{border-color:color-mix(in srgb,var(--good) 45%,transparent)} .toast.good svg{color:var(--good-ink)}
+.toast.warn{border-color:color-mix(in srgb,var(--warn) 55%,transparent)} .toast.warn svg{color:var(--warn)}
+.toast.crit{border-color:color-mix(in srgb,var(--crit) 50%,transparent)} .toast.crit svg{color:var(--crit)}
+.toast.out{animation:toastOut .3s forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateY(10px) scale(.97)}}
+@media (prefers-reduced-motion: reduce){.toast{animation:none}}
+
+/* ==========================================================================
+   NOTIFICATION STATUS PANEL
+   ========================================================================== */
+.nstate{
+  display:flex;gap:var(--sp-3);align-items:flex-start;border-radius:16px;padding:var(--sp-4);
+  border:1px solid var(--hairline);background:var(--surface-1);margin:var(--sp-3) 0;
+}
+.nstate.ok{border-color:color-mix(in srgb,var(--good) 40%,transparent);background:color-mix(in srgb,var(--good) 6%,transparent)}
+.nstate.no{border-color:color-mix(in srgb,var(--crit) 38%,transparent);background:color-mix(in srgb,var(--crit) 5%,transparent)}
+.nstate.pend{border-color:color-mix(in srgb,var(--s1) 34%,transparent);background:color-mix(in srgb,var(--s1) 5%,transparent)}
+.nstate .nt{font-weight:680;margin-bottom:3px}
+.nstate .nd{font-size:.88rem;color:var(--ink-2);line-height:1.5}
+.chanlist{display:grid;gap:var(--sp-2);margin-top:var(--sp-3)}
+.chan{display:flex;gap:var(--sp-3);align-items:flex-start;border:1px solid var(--hairline);border-radius:14px;padding:var(--sp-3) var(--sp-4);background:var(--surface-1)}
+.chan .ct{font-weight:640;font-size:.94rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chan .cd{font-size:.85rem;color:var(--ink-2);margin-top:3px;line-height:1.5}
+.tagok{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px;
+  background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good-ink);border:1px solid color-mix(in srgb,var(--good) 34%,transparent)}
+.tagno{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 8px;border-radius:999px;
+  background:var(--plane);color:var(--ink-3);border:1px solid var(--hairline)}
+
+/* ---------- inline link chips must never break across lines ---------- */
+.src{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;padding:3px 9px}
+.src .ic{width:13px;height:13px}
+.pill{white-space:nowrap}
+.todo .meta,.chan .ct{align-items:center}
+.btn .ic,.iconbtn .ic{width:16px;height:16px}
+.btn{gap:8px}
+.nstate .btn{margin-top:2px}

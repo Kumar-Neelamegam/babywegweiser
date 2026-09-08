@@ -1,0 +1,178 @@
+/* ==========================================================================
+   PASS 4 — typographic system, richer artwork, motion
+   ========================================================================== */
+:root{
+  --font-display:"Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* fluid scale: min at 360px, max at 1200px */
+  --t-xs:clamp(.72rem,.68rem + .18vw,.79rem);
+  --t-sm:clamp(.82rem,.78rem + .2vw,.9rem);
+  --t-md:clamp(.94rem,.9rem + .2vw,1rem);
+  --t-lg:clamp(1.05rem,.98rem + .35vw,1.2rem);
+  --t-xl:clamp(1.2rem,1.06rem + .6vw,1.5rem);
+  --t-2xl:clamp(1.5rem,1.24rem + 1.15vw,2.15rem);
+  --t-3xl:clamp(1.9rem,1.4rem + 2.2vw,3rem);
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  font-family:var(--font);font-size:var(--t-md);
+  font-synthesis-weight:none;                    /* never fake a bold face */
+  font-variant-numeric:proportional-nums;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4,.logo,.stat .v,.kpi,.amt,.orb .wk,.triseg .tt{
+  font-family:var(--font-display);
+  font-weight:700;letter-spacing:-.02em;
+  text-wrap:balance;
+}
+h1{font-size:var(--t-3xl);line-height:1.06;letter-spacing:-.035em}
+h2{font-size:var(--t-xl);line-height:1.2}
+h3{font-size:var(--t-lg);line-height:1.25}
+p,.todo .d,.chan .cd,.nstate .nd,.banner p,.li2,.meal{text-wrap:pretty}
+/* German and Ukrainian produce very long compounds — let them break */
+:root:lang(de) p,:root:lang(de) .todo .t,:root:lang(de) .todo .d,
+:root:lang(uk) p,:root:lang(uk) .todo .t,:root:lang(uk) .todo .d,
+:root:lang(ro) p,:root:lang(bs) p,:root:lang(tr) p{hyphens:auto;overflow-wrap:break-word}
+.stat .v,.kpi,.amt,table.data td.num,.ruler .lbl,.ws .n,#kickN{font-variant-numeric:tabular-nums}
+.stat .v{font-size:var(--t-2xl);line-height:1.1;letter-spacing:-.035em}
+.stat .k,.tk,.triseg .tl{font-family:var(--font);font-weight:700;font-size:var(--t-xs)}
+.tiny{font-size:var(--t-xs)} small,.muted{font-size:var(--t-sm)}
+.btn,.chip,.tab,.iconbtn,select.lang{font-family:var(--font);font-weight:600;letter-spacing:-.005em}
+.tab[aria-selected="true"]{font-weight:700}
+.logo{font-size:var(--t-lg);letter-spacing:-.035em}
+.banner p{font-size:var(--t-sm);line-height:1.6}
+.todo .t{font-size:var(--t-md);font-weight:650}
+.nstate .nt,.chan .ct{font-family:var(--font-display);letter-spacing:-.015em}
+
+/* ==========================================================================
+   SCROLL PROGRESS
+   ========================================================================== */
+#scrollbar{
+  position:fixed;inset-block-start:0;inset-inline-start:0;height:3px;z-index:60;width:0;
+  background:linear-gradient(90deg,var(--brand),#f0a6cb,var(--s3));
+  box-shadow:0 0 10px color-mix(in srgb,var(--brand) 55%,transparent);
+  transition:width .12s linear;
+}
+
+/* ==========================================================================
+   TAB INDICATOR
+   ========================================================================== */
+nav.tabs{position:relative}
+#tabink{
+  position:absolute;inset-block-end:6px;height:3px;border-radius:3px;
+  background:var(--grad-brand);transition:transform .42s var(--ease-out),width .42s var(--ease-out);
+  pointer-events:none;transform-origin:left;
+}
+
+/* ==========================================================================
+   MOTION
+   ========================================================================== */
+/* artwork strokes draw themselves when scrolled into view */
+.art path,.art circle,.art ellipse,.art rect{transition:none}
+.art.draw [stroke]{stroke-dasharray:var(--len,300);stroke-dashoffset:var(--len,300);
+  animation:drawIn 1.15s cubic-bezier(.22,.9,.28,1) forwards}
+@keyframes drawIn{to{stroke-dashoffset:0}}
+.art.fadein{animation:artUp .7s cubic-bezier(.22,.9,.28,1) both}
+@keyframes artUp{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+
+/* the motif breathes */
+.orbart,.heroart use{transform-box:fill-box;transform-origin:center}
+.breathe{animation:breathe 5.5s ease-in-out infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+
+/* heartbeat ring inside the orb */
+.orb::after{
+  content:"";position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid color-mix(in srgb,var(--brand) 55%,transparent);
+  animation:beat 2.4s cubic-bezier(.22,.9,.28,1) infinite;pointer-events:none;
+}
+@keyframes beat{
+  0%{transform:scale(.94);opacity:0}
+  18%{transform:scale(1.02);opacity:.75}
+  32%{transform:scale(1);opacity:.5}
+  50%{transform:scale(1.06);opacity:.35}
+  100%{transform:scale(1.14);opacity:0}
+}
+
+/* primary buttons get a slow gradient drift + sheen on hover */
+.btn.primary{background-size:180% 180%;animation:drift 9s ease infinite}
+@keyframes drift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.btn.primary::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.42) 50%,transparent 65%);
+  transform:translateX(-120%);transition:transform .65s var(--ease-out);
+}
+.btn.primary{position:relative;overflow:hidden}
+.btn.primary:hover::after{transform:translateX(120%)}
+
+/* chips spring */
+.chip{transition:transform .22s cubic-bezier(.34,1.56,.64,1),background .18s,border-color .18s,color .18s}
+.chip[aria-pressed="true"]{transform:scale(1.04)}
+
+/* checkbox tick draws itself */
+.todo input[type=checkbox]:checked{animation:tickPop .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes tickPop{0%{transform:scale(.7) rotate(-8deg)}60%{transform:scale(1.22) rotate(3deg)}100%{transform:scale(1)}}
+.todo.justdone{animation:rowFlash 1s var(--ease-out)}
+@keyframes rowFlash{0%{background:color-mix(in srgb,var(--good) 26%,transparent)}100%{background:transparent}}
+
+/* trimester fill gets a light sweep */
+.triseg .fill::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(100deg,transparent 40%,rgba(255,255,255,.55) 50%,transparent 60%);
+  transform:translateX(-100%);animation:sweep 5.5s ease-in-out infinite;
+}
+@keyframes sweep{0%,60%{transform:translateX(-100%)}85%,100%{transform:translateX(120%)}}
+
+/* week strip active pop */
+.ws.on{animation:wsPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes wsPop{0%{transform:scale(.9)}60%{transform:scale(1.09)}100%{transform:scale(1)}}
+
+/* confetti when a whole phase is ticked off */
+.conf{position:fixed;z-index:130;pointer-events:none;width:9px;height:14px;border-radius:2px;
+  animation:confFall 1.5s cubic-bezier(.2,.7,.4,1) forwards}
+@keyframes confFall{
+  0%{opacity:1;transform:translate(0,0) rotate(0)}
+  100%{opacity:0;transform:translate(var(--cx),var(--cy)) rotate(var(--cr))}
+}
+
+/* card art corners on the calculators */
+.cardart{position:absolute;inset-block-start:10px;inset-inline-end:10px;width:74px;opacity:.5;pointer-events:none}
+.card{position:relative}
+.card:hover .cardart{opacity:.75;transform:translateY(-2px)}
+.cardart{transition:opacity .3s,transform .3s var(--ease-out)}
+
+/* phase headers in the to-do list */
+.phasehead{display:flex;align-items:center;gap:var(--sp-3);margin:var(--sp-5) 0 var(--sp-1)}
+.phasehead .pa{width:60px;height:auto;flex:0 0 auto}
+.phasehead h3{margin:0}
+.phasehead .pcount{margin-inline-start:auto;font-size:var(--t-xs);color:var(--ink-2);
+  background:var(--plane);border:1px solid var(--hairline);border-radius:999px;padding:3px 10px;font-weight:700}
+
+/* tracker scene that changes with the trimester */
+.trackscene{
+  position:absolute;inset-block-start:8px;inset-inline-end:8px;width:min(26%,180px);
+  opacity:.55;pointer-events:none;
+}
+@media(max-width:760px){.trackscene{display:none}}
+
+/* wave divider */
+.wave{display:block;width:100%;height:34px;margin-block-start:calc(var(--sp-4) * -1)}
+
+@media (prefers-reduced-motion: reduce){
+  #scrollbar,#tabink{transition:none}
+  .breathe,.orb::after,.btn.primary,.triseg .fill::after,.ws.on,.art.draw [stroke],.art.fadein{animation:none !important}
+  .art.draw [stroke]{stroke-dashoffset:0 !important}
+  .btn.primary::after{display:none}
+}
+@media print{ #scrollbar,#tabink,.cardart,.trackscene,.wave{display:none !important} }
+
+/* ---------- card titles a step larger ---------- */
+.section-head h2,.card > h2{font-size:clamp(1.34rem,1.14rem + .8vw,1.7rem);line-height:1.18}
+.section-head h3,.card > h3,.panel h3{font-size:clamp(1.14rem,1.03rem + .45vw,1.34rem);line-height:1.22}
+.phasehead h3{font-size:clamp(1.1rem,1rem + .4vw,1.28rem)}
+.logo{font-size:clamp(1.05rem,.98rem + .35vw,1.2rem)}   /* header stays put */
+
+/* ---------- main is also .wrap, whose class beats the element selector ----------
+   .wrap sets `padding:0 16px`, which was silently zeroing the vertical padding. */
+main.wrap{padding-block:var(--sp-6) calc(var(--sp-6) * 2)}
+@media(max-width:600px){ main.wrap{padding-block:var(--sp-5) var(--sp-6)} }

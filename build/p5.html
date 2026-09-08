@@ -1,0 +1,533 @@
+<script>
+/* ============================== TRACKER ============================== */
+let trackWeek=null;
+function renderTrack(){
+  const cw=currentWeek();
+  if(trackWeek===null) trackWeek=Math.max(4,Math.min(40,cw||12));
+  const d=WEEKS.find(x=>x.w===trackWeek)||WEEKS[0];
+  $("#weekSlider").value=trackWeek;
+  $("#fruitEmoji").textContent=d.e;
+  $("#fruitName").textContent=LX(d);
+  $("#fruitWeekLbl").textContent=`${t().weekOf} ${d.w} · ${t()["tri"+triOf(d.w)]}`;
+  $("#triPill").textContent=t()["tri"+triOf(d.w)];
+  $("#sizeBars").innerHTML=`
+    <div class="sizebar"><div class="k">${esc(t().sizeLen)}</div><div class="v">${d.l} cm</div></div>
+    <div class="sizebar"><div class="k">${esc(t().sizeWt)}</div><div class="v">${d.g?d.g+" g":"<1 g"}</div></div>
+    <div class="sizebar"><div class="k">${esc(t().sizeCmp)}</div><div class="v" style="font-size:.98rem">${esc(LX(d))}</div></div>`;
+  const act=MS.filter(m=>m.lane===0&&trackWeek>=m.a&&trackWeek<=m.b);
+  $("#weekNote").innerHTML=act.length? act.map(m=>`<div>• ${esc(LX(m))} — <a href="${m.u}" target="_blank" rel="noopener noreferrer">${esc(t().officialInfo)} ↗</a></div>`).join("")
+    : esc(t().weekNoExam);
+  renderLogChart(); renderKick();
+}
+$("#weekSlider").addEventListener("input",e=>{ trackWeek=+e.target.value; renderTrack(); });
+
+/* ---- personal log ---- */
+$("#logAdd").onclick=()=>{
+  const e={d:$("#logDate").value||new Date().toISOString().slice(0,10),
+    w:parseFloat($("#logWeight").value)||null, s:parseInt($("#logSys").value)||null, dia:parseInt($("#logDia").value)||null};
+  if(!e.w&&!e.s) return;
+  S.log.push(e); S.log.sort((a,b)=>a.d<b.d?-1:1); save();
+  $("#logWeight").value=$("#logSys").value=$("#logDia").value="";
+  renderLogChart();
+};
+$("#logPrint").onclick=()=>window.print();
+function renderLogChart(){
+  const svg=$("#logChart"), leg=$("#logLegend");
+  const wl=S.log.filter(x=>x.w), bl=S.log.filter(x=>x.s);
+  if(!wl.length&&!bl.length){ svg.innerHTML=""; svg.setAttribute("viewBox","0 0 10 10"); leg.innerHTML=`<span class="li tiny">${esc(t().logEmpty)}</span>`; return; }
+  const W=440,fh=118,P={l:40,r:12,t:20,b:20};
+  let out="",oy=0;
+  const facet=(rows,pick,lbl,col,unit)=>{
+    if(!rows.length) return;
+    const vals=rows.map(pick), mn=Math.min(...vals)*.97, mx=Math.max(...vals)*1.03, span=(mx-mn)||1;
+    const t0=new Date(rows[0].d).getTime(), t1=new Date(rows[rows.length-1].d).getTime(), tspan=(t1-t0)||1;
+    const sx=r=>P.l+((new Date(r.d).getTime()-t0)/tspan)*(W-P.l-P.r);
+    const sy=v=>oy+P.t+(fh-P.t-P.b)-((v-mn)/span)*(fh-P.t-P.b);
+    out+=`<text x="0" y="${oy+11}" font-size="11.5" font-weight="700" fill="var(--ink-1)">${esc(lbl)}</text>`;
+    [mn,mx].forEach(v=>out+=`<line x1="${P.l}" y1="${sy(v)}" x2="${W-P.r}" y2="${sy(v)}" stroke="var(--grid)"/>
+      <text x="${P.l-5}" y="${sy(v)+3.5}" font-size="9.5" text-anchor="end" fill="var(--ink-3)">${v.toFixed(0)}</text>`);
+    const pts=rows.map(r=>[sx(r),sy(pick(r))]);
+    out+=`<path d="M${pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join("L")}" fill="none" stroke="var(--${col})" stroke-width="2"/>`;
+    pts.forEach((p,i)=>out+=`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--${col})" stroke="var(--surface-1)" stroke-width="2"><title>${rows[i].d}: ${pick(rows[i])} ${unit}</title></circle>`);
+    const last=rows[rows.length-1];
+    out+=`<text x="${W-P.r}" y="${sy(pick(last))-9}" font-size="10.5" font-weight="700" text-anchor="end" fill="var(--ink-1)">${pick(last)} ${unit}</text>`;
+    oy+=fh+10;
+  };
+  facet(wl,r=>r.w,t().logWeight,"s1","kg");
+  facet(bl,r=>r.s,t().bpSys,"s3","mmHg");
+  svg.setAttribute("viewBox",`0 0 ${W} ${oy}`); svg.innerHTML=out;
+  leg.innerHTML=`<span class="li tiny">${S.log.length} ${esc(t().logEntries)}</span>`;
+}
+/* ---- kicks ---- */
+$("#kickBtn").onclick=()=>{ S.kicks.push(Date.now()); save(); renderKick(); };
+$("#kickReset").onclick=()=>{ S.kicks=[]; save(); renderKick(); };
+function renderKick(){
+  const t0=startOfToday().getTime(); const k=S.kicks.filter(x=>x>=t0);
+  $("#kickN").textContent=k.length;
+  $("#kickTime").textContent=k.length? new Date(k[k.length-1]).toLocaleTimeString(LX(LOCALE)||"de-AT",{hour:"2-digit",minute:"2-digit"}) : "—";
+}
+
+/* ============================== TODO ============================== */
+let todoPh="all";
+function renderTodo(){
+  const phs=[["all",t().phAll],["0",t().phBefore],["1",t().phDuring],["2",t().phAfter]];
+  $("#todoFilter").innerHTML=phs.map(([v,n])=>`<button class="chip" data-p="${v}" aria-pressed="${todoPh===v}">${esc(n)}</button>`).join("");
+  $$("#todoFilter .chip").forEach(b=>b.onclick=()=>{todoPh=b.dataset.p;renderTodo();});
+  const items=TODO.filter(o=>todoPh==="all"||o.ph===+todoPh);
+  const names=[t().phBefore,t().phDuring,t().phAfter];
+  let html="";
+  [0,1,2].forEach(ph=>{
+    const list=items.filter(o=>o.ph===ph); if(!list.length) return;
+    html+=`<h3 style="margin:20px 0 6px">${esc(names[ph])}</h3><ul class="clean">`+list.map(o=>{
+      const dt=(o.ph===0?null:dateOfWeek(o.w)), done=!!S.done[o.id];
+      return `<li class="todo ${done?"done":""}"><input type="checkbox" ${done?"checked":""} data-id="${o.id}" aria-label="${esc(LX(o)[0])}">
+        <div class="body"><div class="t">${esc(LX(o)[0])}</div><div class="d">${esc(LX(o)[1])}</div>
+        <div class="meta">${dt&&S.due?`<span class="pill">${fmtDate(dt)}</span>`:""}
+          <a class="src" href="${o.u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ↗</a>
+          ${dt&&S.due?`<button class="src" data-ics="${o.id}">${esc(t().calendarS)}</button>`:""}
+        </div></div></li>`;
+    }).join("")+`</ul>`;
+  });
+  $("#todoList").innerHTML=html;
+  $$("#todoList input[type=checkbox]").forEach(c=>c.onchange=()=>{ S.done[c.dataset.id]=c.checked; if(!c.checked) delete S.done[c.dataset.id]; save(); renderTodo(); renderProgress(); renderNext(); });
+  $$("#todoList [data-ics]").forEach(b=>b.onclick=()=>{ const o=TODO.find(x=>x.id===b.dataset.ics);
+    const e=o?mkEv(o):null; if(!e){ toast(t().icsNone,"warn"); return; }
+    downloadIcs([e], LX(o)[0], true); });
+  renderProgress();
+}
+function renderProgress(){ const d=Object.keys(S.done).length; $("#todoProgress").textContent=`${d}/${TODO.length} ${t().todoDone}`; }
+$("#printTodo").onclick=()=>window.print();
+
+/* ============================== DIET ============================== */
+function renderDiet(){
+  const cw=currentWeek(); const cur=S.diet.tri||(cw?triOf(cw):1);
+  $("#dietTri").innerHTML=[1,2,3].map(i=>`<button class="chip" data-t="${i}" aria-pressed="${cur===i}">${esc(t()["tri"+i])}</button>`).join("");
+  $$("#dietTri .chip").forEach(b=>b.onclick=()=>{S.diet.tri=+b.dataset.t;save();renderDiet();});
+  $("#dietPref").innerHTML=DIETPREF.map(([k,n])=>`<button class="chip" data-p="${k}" aria-pressed="${S.diet.pref===k}">${esc(LX(n))}</button>`).join("");
+  $$("#dietPref .chip").forEach(b=>b.onclick=()=>{S.diet.pref=b.dataset.p;save();renderDiet();});
+  const D=DIET[cur], day=DIETDAY[S.diet.pref];
+  $("#dietBody").innerHTML=`
+   <div class="note">${esc(t().dietKcal)}: ${esc(LX(D.kcal))}</div>
+   <div class="grid g2" style="margin-top:14px">
+     <div><h3>✅ ${esc(t().dietEat)}</h3><ul class="clean">${LX(D.eat).map(x=>`<li class="todo"><div class="body"><div class="d" style="color:var(--ink-1)">${esc(x)}</div></div></li>`).join("")}</ul></div>
+     <div><h3>⚠️ ${esc(t().dietAvoid)}</h3><ul class="clean">${LX(D.avoid).map(x=>`<li class="todo"><div class="body"><div class="d" style="color:var(--ink-1)">${esc(x)}</div></div></li>`).join("")}</ul></div>
+   </div>
+   <h3 style="margin-top:20px">🍽 ${esc(t().dietDay)}</h3>
+   <ul class="clean">${LX(day).map(x=>`<li class="todo"><div class="body"><div class="d" style="color:var(--ink-1)">${esc(x)}</div></div></li>`).join("")}</ul>
+   <div class="note warn" style="margin-top:16px">${esc(t().dietDisc)}
+     <a href="${L.gesund}" target="_blank" rel="noopener noreferrer">gesundheit.gv.at ↗</a></div>`;
+}
+
+/* ============================== CALCULATORS ============================== */
+$("#cDueBtn").onclick=()=>{
+  const v=$("#cLmp").value; if(!v) return;
+  const cyc=parseInt($("#cCycle").value)||28;
+  const d=new Date(v+"T00:00:00"); d.setDate(d.getDate()+280+(cyc-28));
+  const w=Math.max(1,Math.min(42,Math.floor((280+(cyc-28)-Math.round((d-startOfToday())/DAY))/7)+1));
+  $("#cDueOut").classList.remove("hide");
+  $("#cDueOut").innerHTML=`<b>${esc(t().calcDue)}: ${fmtDate(d.toISOString().slice(0,10))}</b><br>
+    ${esc(t().currently)}: ${esc(t().weekOf)} ${w} · <button class="btn sm" style="margin-top:8px" data-adopt="${d.toISOString().slice(0,10)}">${esc(t().adoptDueBtn)}</button>`;
+};
+function adoptDue(v){ S.due=v; save(); renderAll(); go("dash"); }
+$("#cMsBtn").onclick=()=>{
+  const v=$("#cMsDue").value||S.due; if(!v) return;
+  const d=new Date(v+"T00:00:00");
+  const st=new Date(d.getTime()-56*DAY);
+  const wk=$("#cMsMulti").checked?84:56;
+  const en=new Date(d.getTime()+wk*DAY);
+  $("#cMsOut").classList.remove("hide");
+  $("#cMsOut").innerHTML=`<b>${esc(t().msStarts)}: ${fmtDate(st.toISOString().slice(0,10))}</b><br>
+   ${esc(t().msEnds)}: ${fmtDate(en.toISOString().slice(0,10))} (${wk/7} ${esc(t().weeksAfterBirth)})<br>
+   <a href="${L.arbinsp}" target="_blank" rel="noopener noreferrer">${esc(t().msLaw)} ↗</a>`;
+};
+$("#cWgBtn").onclick=()=>{
+  const n=parseFloat($("#cNet").value); if(!n) return;
+  const daily=(n*1.17)/30, total=daily*112;
+  $("#cWgOut").classList.remove("hide");
+  $("#cWgOut").innerHTML=`<b>≈ ${euro(daily)} ${esc(t().perDay)}</b><br>
+   ${esc(t().for16w)}: ≈ ${euro(total)}<br>
+   <a href="${L.wochengeld}" target="_blank" rel="noopener noreferrer">${esc(t().akDetails)} ↗</a>`;
+};
+$("#cKbgBtn").onclick=()=>{
+  const d=Math.max(365,Math.min(851,parseInt($("#cDays").value)||365));
+  $("#cKbgOut").classList.remove("hide");
+  $("#cKbgOut").innerHTML=`<b>${esc(t().kbgFlat)}: ≈ ${euro(41.14*d)}</b> <span class="tiny">(${d} × €41,14)</span><br>
+   ${esc(t().kbgInc)}: ≈ ${euro(80.12*Math.min(d,365))} <span class="tiny">(max. 365 ${esc(t().daysS)})</span><br>
+   <a href="${L.kbg}" target="_blank" rel="noopener noreferrer">${esc(t().kbgOfficial)} ↗</a>`;
+};
+function renderRates(){
+  $("#ratesTable").innerHTML=`<table class="data"><thead><tr><th>${esc(t().rCol1)}</th><th class="num">${esc(t().rCol2)}</th></tr></thead><tbody>`+
+   RATES.map(([n,v,u])=>{const val=v.split(" / ")[S.lang==="en"?1:0];
+     return `<tr><td><a href="${u}" target="_blank" rel="noopener noreferrer">${esc(LX(n))}</a></td><td class="num">${esc(val)}</td></tr>`}).join("")+`</tbody></table>`;
+  $("#ratesStand").textContent=t().ratesStand;
+}
+
+/* ============================== TOASTS ============================== */
+const TOASTIC={
+ good:'<path d="M12 3.4a8.6 8.6 0 110 17.2 8.6 8.6 0 010-17.2z" fill="currentColor" opacity=".16" stroke="none"/><circle cx="12" cy="12" r="8.6"/><path d="M8.2 12.2l2.6 2.6 5-5.4"/>',
+ warn:'<circle cx="12" cy="12" r="8.6"/><path d="M12 7.4v5.4"/><circle cx="12" cy="16.4" r=".9"/>',
+ crit:'<path d="M10.3 4.6a2 2 0 013.4 0l7.2 12.6a2 2 0 01-1.7 3H4.8a2 2 0 01-1.7-3z"/><path d="M12 9.6v4.2"/><circle cx="12" cy="17" r=".9"/>'
+};
+function toast(msg,kind){
+  const host=$("#toasts"); if(!host||!msg) return;
+  const el=document.createElement("div");
+  el.className="toast "+(kind||"good");
+  el.setAttribute("role","status");
+  el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+(TOASTIC[kind]||TOASTIC.good)+'</svg><span>'+esc(msg)+'</span>';
+  host.appendChild(el);
+  while(host.children.length>3) host.firstChild.remove();
+  setTimeout(()=>{ el.classList.add("out"); setTimeout(()=>el.remove(),330); }, kind==="crit"?6500:4400);
+}
+
+/* ============================== CALENDAR EXPORT (.ics, RFC 5545) ============================== */
+const pad2=n=>String(n).padStart(2,"0");
+/* LOCAL calendar day — never toISOString(), which shifts to UTC and can move the date by a day */
+function icsDate(d){ return d.getFullYear()+pad2(d.getMonth()+1)+pad2(d.getDate()); }
+function icsStamp(){ const d=new Date();
+  return d.getUTCFullYear()+pad2(d.getUTCMonth()+1)+pad2(d.getUTCDate())+"T"+
+         pad2(d.getUTCHours())+pad2(d.getUTCMinutes())+pad2(d.getUTCSeconds())+"Z"; }
+function icsEsc(s){ return String(s==null?"":s)
+  .replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\r?\n/g,"\\n"); }
+const _enc = (typeof TextEncoder!=="undefined") ? new TextEncoder() : null;
+const _len = s => _enc ? _enc.encode(s).length : s.length;
+function icsFold(line){                       /* RFC 5545: max 75 octets per line */
+  if(_len(line)<=75) return line;
+  const parts=[]; let cur="";
+  for(const ch of Array.from(line)){
+    const limit = parts.length ? 74 : 75;
+    if(_len(cur+ch)>limit){ parts.push(cur); cur=ch; } else cur+=ch;
+  }
+  parts.push(cur);
+  return parts.map((s,i)=>i? " "+s : s).join("\r\n");
+}
+function parseLocalDate(s){ const p=String(s).split("-").map(Number);
+  return (p.length===3 && p.every(n=>!isNaN(n))) ? new Date(p[0],p[1]-1,p[2]) : null; }
+function slug(s){ return String(s||"termine").toLowerCase()
+  .replace(/[äàá]/g,"a").replace(/[öòó]/g,"o").replace(/[üùú]/g,"u").replace(/ß/g,"ss")
+  .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,48) || "termine"; }
+
+function buildIcs(evs){
+  const stamp=icsStamp();
+  const lines=["BEGIN:VCALENDAR","VERSION:2.0",
+    "PRODID:-//BabyWegweiser//Schwangerschaft Oesterreich//"+S.lang.toUpperCase(),
+    "CALSCALE:GREGORIAN","METHOD:PUBLISH",
+    "X-WR-CALNAME:"+icsEsc(t().calName),
+    "X-WR-TIMEZONE:Europe/Vienna"];
+  evs.forEach((e,i)=>{
+    const end=new Date(e.d.getFullYear(),e.d.getMonth(),e.d.getDate()+1);
+    lines.push("BEGIN:VEVENT",
+      "UID:"+icsEsc((e.uid||("ev"+i))+"-"+icsDate(e.d))+"@babywegweiser.at",
+      "DTSTAMP:"+stamp,
+      "DTSTART;VALUE=DATE:"+icsDate(e.d),
+      "DTEND;VALUE=DATE:"+icsDate(end),
+      "SUMMARY:"+icsEsc(e.t),
+      "DESCRIPTION:"+icsEsc(e.desc||""));
+    if(e.url) lines.push("URL:"+icsEsc(e.url));
+    lines.push("TRANSP:TRANSPARENT",
+      "CATEGORIES:"+icsEsc(t().calCat),
+      "BEGIN:VALARM","ACTION:DISPLAY","TRIGGER:-P2D",
+      "DESCRIPTION:"+icsEsc(e.t),"END:VALARM","END:VEVENT");
+  });
+  lines.push("END:VCALENDAR");
+  return lines.map(icsFold).join("\r\n")+"\r\n";
+}
+function mkEv(o){ const d=dateOfWeek(o.w);
+  return d ? {uid:"todo-"+o.id, t:LX(o)[0], d, desc:LX(o)[1], url:o.u} : null; }
+function allEvents(){
+  const out=[];
+  if(S.due) TODO.forEach(o=>{ if(o.ph===0) return; const e=mkEv(o); if(e) out.push(e); });
+  (S.rem||[]).forEach((r,i)=>{ const d=r&&r.d?parseLocalDate(r.d):null;
+    if(d) out.push({uid:"own-"+i,t:r.t,d,desc:t().ownReminder}); });
+  return out.filter(e=>e.d instanceof Date && !isNaN(e.d.getTime())).sort((a,b)=>a.d-b.d);
+}
+function dl(blob,fn){
+  try{
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download=fn; a.rel="noopener noreferrer"; a.style.display="none";
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{ a.remove(); URL.revokeObjectURL(url); },4000);
+    return true;
+  }catch(e){ return false; }
+}
+function downloadIcs(evs,name,single){
+  const list=(evs||[]).filter(e=>e&&e.d instanceof Date&&!isNaN(e.d.getTime()));
+  if(!list.length){ toast(t().icsNone,"warn"); return; }
+  let text;
+  try{ text=buildIcs(list); }catch(err){ toast(t().icsErr,"crit"); return; }
+  const ok=dl(new Blob([text],{type:"text/calendar;charset=utf-8"}), slug(name)+".ics");
+  if(ok) toast(single ? t().icsOne : t().icsOk.replace("%d",list.length), "good");
+  else toast(t().icsErr,"crit");
+}
+$("#icsAll").onclick=()=>{ if(!S.due){ toast(t().icsNone,"warn"); openOnboard(); return; }
+  downloadIcs(allEvents(), t().fileAll); };
+$("#remIcs").onclick=()=>$("#icsAll").onclick();
+
+/* ============================== NOTIFICATIONS ============================== */
+function notifState(){
+  if(typeof Notification==="undefined") return "unsupported";
+  if(window.isSecureContext===false) return "insecure";
+  return Notification.permission;            /* default | granted | denied */
+}
+let _timers=[];
+function scheduleLocal(){
+  _timers.forEach(clearTimeout); _timers=[];
+  if(notifState()!=="granted") return 0;
+  const now=Date.now(), horizon=now+21*DAY;
+  upcoming(12).forEach(({o,d})=>{
+    const when=d.getTime()-2*DAY;
+    if(when<=now || when>horizon) return;
+    const ms=when-now;
+    if(ms<=0 || ms>2147483647) return;
+    _timers.push(setTimeout(()=>{
+      try{ new Notification(t().brand,{body:LX(o)[0],tag:"bw-"+o.id,requireInteraction:false}); }catch(e){}
+    },ms));
+  });
+  return _timers.length;
+}
+function testNotify(){
+  try{
+    const n=new Notification(t().brand,{body:t().nsTestBody,tag:"bw-test"});
+    setTimeout(()=>{ try{ n.close(); }catch(e){} },8000);
+    toast(t().nsTestSent,"good");
+  }catch(e){ toast(t().nsTestFail,"warn"); }
+}
+async function askNotify(){
+  const st=notifState();
+  if(st==="unsupported"){ toast(t().nsUnsupD,"warn"); return; }
+  if(st==="insecure"){ toast(t().nsInsecureD,"warn"); return; }
+  if(st==="denied"){ toast(t().nsNoD,"warn"); return; }
+  if(st==="granted"){ testNotify(); return; }
+  const btn=$("#nsBtn");
+  if(btn){ btn.disabled=true; btn.innerHTML=esc(t().nsWaiting); }
+  let p="denied";
+  try{
+    const r=Notification.requestPermission();
+    const req=(r && typeof r.then==="function") ? r
+      : new Promise(res=>{ try{ Notification.requestPermission(res); }catch(e){ res("denied"); } });
+    /* never let the UI hang if the browser silently shows no dialog */
+    p=await Promise.race([req, new Promise(res=>setTimeout(()=>res("nodialog"),20000))]);
+  }catch(e){ p="denied"; }
+  if(btn) btn.disabled=false;
+  renderRem();
+  if(p==="granted"){
+    const n=scheduleLocal();
+    toast(t().notifOn+(n? " "+schedText(n) : ""),"good");
+    testNotify();
+  } else if(p==="denied"){ toast(t().nsNoD,"warn"); }
+  else { toast(t().nsNoDialog,"warn"); }
+}
+$("#remNotify").onclick=askNotify;
+
+/* ---- own reminders ---- */
+$("#remAdd").onclick=()=>{
+  const tt=$("#remT").value.trim(), d=$("#remD").value;
+  if(!tt||!d){ toast(t().needTitleDate,"warn"); return; }
+  S.rem.push({t:tt,d}); S.rem.sort((a,b)=>a.d<b.d?-1:1); save();
+  $("#remT").value=""; renderRem(); scheduleLocal(); toast(t().remSaved,"good");
+};
+
+function schedText(n){ return n===1 ? t().nsScheduled1 : t().nsScheduled.replace("%d",n); }
+function nsPanel(){
+  const st=notifState();
+  const m={
+    "default":  ["pend","nsAsk","nsAskD","bell",  t().nsEnable, true],
+    "granted":  ["ok",  "nsOk", "nsOkD", "checkcircle", t().nsTest, true],
+    "denied":   ["no",  "nsNo", "nsNoD", "alert", null, false],
+    "unsupported":["no","nsUnsup","nsUnsupD","info", null, false],
+    "insecure": ["no",  "nsInsecure","nsInsecureD","info", null, false]
+  }[st];
+  const n=_timers.length;
+  return `<div class="nstate ${m[0]}">
+    <span class="badge ${m[0]==="ok"?"mint":m[0]==="no"?"sun":"sky"}">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${m[3]}"/></svg></span>
+    <div style="flex:1;min-width:0">
+      <div class="nt">${esc(t()[m[1]])}</div>
+      <div class="nd">${esc(t()[m[2]])}</div>
+      ${st==="granted"?`<div class="nd" style="margin-top:6px">${esc(n? schedText(n) : t().nsNoneScheduled)}</div>`:""}
+      ${m[4]?`<div class="btnrow tight"><button class="btn ${st==="granted"?"":"primary"}" id="nsBtn">${esc(m[4])}</button></div>`:""}
+    </div></div>`;
+}
+function chanCards(){
+  const rec=`<span class="tagok">${esc(t().chanRec)}</span>`;
+  const st=notifState();
+  const rows=[
+    ["cal","mint",t().chanCalT,t().chanCalD,rec],
+    ["bell","sky",t().chanBrowT,t().chanBrowD, st==="granted"?`<span class="tagok">${esc(t().onS)}</span>`:`<span class="tagno">${esc(t().offS)}</span>`],
+    ["phone","plum",t().chanAppT,t().chanAppD,""]
+  ];
+  return `<div class="chanlist">`+rows.map(([i,tone,ti,de,tag])=>
+    `<div class="chan"><span class="badge ${tone}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${i}"/></svg></span>
+      <div style="flex:1;min-width:0"><div class="ct">${esc(ti)} ${tag}</div><div class="cd">${esc(de)}</div></div></div>`
+  ).join("")+`</div>`;
+}
+function renderRem(){
+  if(notifState()==="granted") scheduleLocal();
+  let host=$("#nstate");
+  if(!host){ host=document.createElement("div"); host.id="nstate";
+    const anchor=$('#v-remind .note.privacy'); if(anchor) anchor.after(host); }
+  if(host){ host.innerHTML=nsPanel()+chanCards();
+    const b=$("#nsBtn"); if(b) b.onclick=askNotify; }
+
+  const auto=upcoming(6);
+  $("#remList").innerHTML=(S.rem.length?`<ul class="clean">`+S.rem.map((r,i)=>`<li class="todo"><div class="body">
+     <div class="t">${esc(r.t)}</div><div class="d">${fmtDate(r.d)}</div>
+     <div class="meta"><button class="src" data-ric="${i}">${esc(t().calendarS)}</button>
+     <button class="src" data-rm="${i}">${esc(t().deleteS)}</button></div></div></li>`).join("")+`</ul>`
+   :`<p class="muted">${esc(t().remNone)}</p>`)
+   +(auto.length?`<h3 style="margin-top:22px">${esc(t().autoFromDue)}</h3><ul class="clean">`+
+     auto.map(({o,d})=>`<li class="todo"><div class="body"><div class="t">${esc(LX(o)[0])}</div><div class="d">${fmtDate(d)}</div></div></li>`).join("")+`</ul>`:"");
+  $$("#remList [data-rm]").forEach(b=>b.onclick=()=>{ S.rem.splice(+b.dataset.rm,1); save(); renderRem(); scheduleLocal(); toast(t().remRemoved,"good"); });
+  $$("#remList [data-ric]").forEach(b=>b.onclick=()=>{ const r=S.rem[+b.dataset.ric]; const d=parseLocalDate(r.d);
+    if(!d){ toast(t().icsErr,"crit"); return; }
+    downloadIcs([{uid:"own-"+b.dataset.ric,t:r.t,d,desc:""}], r.t, true); });
+}
+
+/* ============================== PRIVACY ============================== */
+function renderPriv(){
+  $("#privBody").innerHTML=t().privHtml;
+  $("#storageInfo").textContent=canStore?t().storageOk:t().storageNo;
+  $("#srcBody").innerHTML=`<ul class="clean">`+[
+    ["Eltern-Kind-Pass","gesundheit.gv.at",L.ekp],
+    ["Eltern-Kind-Pass – Überblick","Sozialministerium",L.sozmin],
+    ["Familie und Partnerschaft – Rechte, Formulare, Wege","oesterreich.gv.at",L.oegv],
+    ["Höhe der Familienleistungen","Bundeskanzleramt / Familienportal",L.bka],
+    ["Kinderbetreuungsgeld","Bundeskanzleramt",L.kbg],
+    ["EKP-Untersuchungen und Kinderbetreuungsgeld","Bundeskanzleramt",L.ekpKbg],
+    ["Wochengeld","Arbeiterkammer",L.wochengeld],
+    ["Österreichische Gesundheitskasse","ÖGK",L.oegk],
+    ["Mutterschutz / Arbeitsrecht","Arbeitsinspektion",L.arbinsp],
+    ["Frühe Hilfen – kostenlose Begleitung für Familien","fruehehilfen.at",L.fruehe]
+  ].map(([n,s,u])=>`<li class="todo"><div class="body"><div class="t">${esc(n)}</div><div class="d">${esc(s)}</div>
+    <div class="meta"><a class="src" href="${u}" target="_blank" rel="noopener noreferrer">${u.replace(/^https:\/\//,"").slice(0,46)} ↗</a></div></div></li>`).join("")+`</ul>`;
+}
+$("#expBtn").onclick=()=>{ const ok=dl(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),"babywegweiser-daten.json");
+  toast(ok?t().expOk:t().icsErr, ok?"good":"crit"); };
+$("#impBtn").onclick=()=>$("#impFile").click();
+$("#impFile").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  if(f.size>2*1024*1024){ toast(t().impErr,"crit"); e.target.value=""; return; }
+  const r=new FileReader();
+  r.onload=()=>{ try{ S=Object.assign(S,sanitizeImport(JSON.parse(r.result)));
+      save(); paintStatic(); renderAll(); toast(t().impOk,"good");
+    }catch(err){ toast(t().impErr,"crit"); } };
+  r.onerror=()=>toast(t().impErr,"crit");
+  r.readAsText(f); e.target.value="";
+};
+/* only known keys, only expected types — an imported file can never inject anything else */
+function sanitizeImport(o){
+  if(!o||typeof o!=="object"||Array.isArray(o)) throw new Error("shape");
+  const str=(v,max)=>typeof v==="string"?v.slice(0,max||120):undefined;
+  const out={};
+  if(LANGS.some(l=>l[0]===o.lang)) out.lang=o.lang;
+  if(o.theme==="dark"||o.theme==="light") out.theme=o.theme;
+  if(typeof o.due==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(o.due)) out.due=o.due;
+  if(typeof o.first==="boolean") out.first=o.first;
+  if(STATES.indexOf(o.state)>-1) out.state=o.state;
+  if(["employed","self","student","none"].indexOf(o.work)>-1) out.work=o.work;
+  if(typeof o.name==="string") out.name=str(o.name,60);
+  if(typeof o.partner==="boolean") out.partner=o.partner;
+  if(typeof o.multi==="boolean") out.multi=o.multi;
+  if(typeof o.onboarded==="boolean") out.onboarded=o.onboarded;
+  if(o.done&&typeof o.done==="object"&&!Array.isArray(o.done)){
+    out.done={}; TODO.forEach(x=>{ if(o.done[x.id]===true) out.done[x.id]=true; });
+  }
+  if(Array.isArray(o.log)) out.log=o.log.slice(0,2000).filter(x=>x&&typeof x==="object")
+    .map(x=>({d:str(x.d,10),w:typeof x.w==="number"?x.w:null,s:typeof x.s==="number"?x.s:null,dia:typeof x.dia==="number"?x.dia:null}))
+    .filter(x=>x.d);
+  if(Array.isArray(o.kicks)) out.kicks=o.kicks.slice(0,5000).filter(n=>typeof n==="number"&&isFinite(n));
+  if(Array.isArray(o.rem)) out.rem=o.rem.slice(0,500).filter(x=>x&&typeof x==="object"&&typeof x.t==="string"&&typeof x.d==="string")
+    .map(x=>({t:str(x.t,120),d:str(x.d,10)}));
+  if(o.diet&&typeof o.diet==="object"){
+    out.diet={tri:[1,2,3].indexOf(o.diet.tri)>-1?o.diet.tri:null,
+              pref:DIETPREF.some(p=>p[0]===o.diet.pref)?o.diet.pref:"std"};
+  }
+  return out;
+}
+$("#delBtn").onclick=()=>{ if(!confirm(t().confirmDelete)) return;
+  try{ localStorage.removeItem(SKEY); }catch(e){} mem={};
+  S={lang:S.lang,theme:S.theme,due:"",first:null,state:"",work:"",name:"",partner:false,multi:false,done:{},log:[],kicks:[],rem:[],diet:{tri:null,pref:"std"},onboarded:false};
+  save(); paintStatic(); renderAll(); toast(t().delOk,"good"); openOnboard(); };
+
+/* ============================== ONBOARDING ============================== */
+let ob=0;
+function openOnboard(){ ob=0; drawOb(); }
+function closeOnboard(){ $("#onboard").innerHTML=""; S.onboarded=true; save(); paintStatic(); renderAll(); }
+function drawOb(){
+  const steps=5;
+  const body=[
+   ()=>`<h2>${esc(t().obTitle)}</h2><p class="muted">${esc(t().obSub)}</p>
+     <div class="field"><label class="f">${esc(t().obDue)}</label><input type="date" id="obDue" value="${S.due||""}"></div>
+     <p class="tiny">${esc(t().obDueAlt)} <a href="#" data-obcalc="1">${esc(t().calcDueT)} ↗</a></p>`,
+   ()=>`<h2>${esc(t().obFirst)}</h2><div class="chips">
+     <button class="chip" data-k="first" data-v="1" aria-pressed="${S.first===true}">${esc(t().obYes)}</button>
+     <button class="chip" data-k="first" data-v="0" aria-pressed="${S.first===false}">${esc(t().obNo)}</button></div>
+     <p class="tiny" style="margin-top:12px">${esc(t().obFirstHint)}</p>`,
+   ()=>`<h2>${esc(t().obState)}</h2><div class="field"><select id="obState"><option value="">—</option>${STATES.map(s=>`<option ${S.state===s?"selected":""}>${s}</option>`).join("")}</select></div>
+     <p class="tiny">${esc(t().obStateHint)}</p>`,
+   ()=>`<h2>${esc(t().obWork)}</h2><div class="chips">
+     ${[["employed",t().obEmployed],["self",t().obSelf],["student",t().obStudent],["none",t().obNone]].map(([k,n])=>
+       `<button class="chip" data-k="work" data-v="${k}" aria-pressed="${S.work===k}">${esc(n)}</button>`).join("")}</div>
+     <p class="tiny" style="margin-top:12px">${esc(t().obWorkHint)}</p>`,
+   ()=>`<h2>${esc(t().obName)}</h2><div class="field"><input type="text" id="obName" value="${esc(S.name||"")}" placeholder="—"></div>
+     <label class="switch" style="margin-bottom:10px"><input type="checkbox" id="obPartner" ${S.partner?"checked":""}><span>${esc(t().obPartner)}</span></label>
+     <label class="switch"><input type="checkbox" id="obMulti" ${S.multi?"checked":""}><span>${esc(t().obMulti)}</span></label>
+     <div class="note privacy" style="margin-top:16px">🔒 ${esc(t().privStrip)}</div>`
+  ][ob]();
+  $("#onboard").innerHTML=`<div class="modal"><div class="sheet" role="dialog" aria-modal="true">
+    <div class="steps">${Array.from({length:steps},(_,i)=>`<i class="${i<=ob?"on":""}"></i>`).join("")}</div>
+    ${body}
+    <div style="display:flex;gap:8px;margin-top:22px;align-items:center">
+      ${ob>0?`<button class="btn ghost" id="obBack">${esc(t().obBack)}</button>`:""}
+      <span class="spacer" style="flex:1"></span>
+      <button class="btn ghost" id="obSkip">${esc(t().obSkip)}</button>
+      <button class="btn primary" id="obNext">${ob===steps-1?esc(t().obStart):esc(t().obNext)}</button>
+    </div></div></div>`;
+  $$("#onboard .chip").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k, v=b.dataset.v;
+    if(k==="first") S.first = v==="1"; else S[k]=v;
+    save(); drawOb();
+  });
+  const commit=()=>{
+    const d=$("#obDue"); if(d&&d.value) S.due=d.value;
+    const st=$("#obState"); if(st) S.state=st.value;
+    const nm=$("#obName"); if(nm) S.name=nm.value.trim();
+    const pt=$("#obPartner"); if(pt) S.partner=pt.checked;
+    const mu=$("#obMulti"); if(mu) S.multi=mu.checked;
+    save();
+  };
+  const bk=$("#obBack"); if(bk) bk.onclick=()=>{commit();ob--;drawOb();};
+  $("#obSkip").onclick=()=>{commit();closeOnboard();};
+  $("#obNext").onclick=()=>{ commit(); if(ob===steps-1){ trackWeek=null; closeOnboard(); } else { ob++; drawOb(); } };
+}
+
+/* ---------- delegated actions (no inline handlers → CSP can lock scripts down) ---------- */
+document.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]");
+  if(g){ e.preventDefault(); go(g.dataset.go); return; }
+  const ob=e.target.closest("[data-ob]");
+  if(ob){ e.preventDefault(); openOnboard(); return; }
+  const ad=e.target.closest("[data-adopt]");
+  if(ad){ e.preventDefault(); adoptDue(ad.dataset.adopt); return; }
+  const oc=e.target.closest("[data-obcalc]");
+  if(oc){ e.preventDefault(); closeOnboard(); go("calc"); return; }
+});
+
+/* ============================== INIT ============================== */
+$("#langSel").onchange=e=>{ S.lang=e.target.value; save(); paintStatic(); renderAll(); };
+$("#themeBtn").onclick=()=>{ S.theme=S.theme==="dark"?"light":"dark"; document.documentElement.dataset.theme=S.theme; save(); paintStatic(); renderAll(); };
+$("#setupBtn").onclick=openOnboard;
+function initDefaults(){ const d=$("#logDate"); if(d&&!d.value) d.value=new Date().toISOString().slice(0,10);
+  const m=$("#cMsDue"); if(m&&!m.value&&S.due) m.value=S.due; }
+function renderAll(){
+  document.documentElement.dataset.theme=S.theme;
+  renderHero(); renderNext(); renderFocus(); renderTimeline(); renderGrowth(); renderMoney();
+  renderTrack(); renderTodo(); renderDiet(); renderRates(); renderRem(); renderPriv();
+}
+initDefaults();
+paintStatic();
+if(!S.due&&!S.onboarded){ renderAll(); openOnboard(); } else { renderAll(); scheduleLocal(); }
+window.addEventListener("resize",()=>{ clearTimeout(window.__rz); window.__rz=setTimeout(renderTimeline,180); });
+</script>
+</body>
+</html>

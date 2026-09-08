@@ -1,0 +1,98 @@
+<script>
+/* ==========================================================================
+   ARTWORK LAYER
+   Every illustration is inline SVG drawn for this project — no stock licence,
+   no external request, nothing for the CSP to allow. Photo slots below are
+   opt-in and stay inside `img-src 'self' data:`.
+   ========================================================================== */
+
+/* Drop a data: URI or a local path in here and that slot renders a real photo
+   instead of the illustration. Leave empty to keep the drawn artwork. */
+const PHOTO={ hero:"", track:"", diet:"", todo:"", credit:"" };
+
+function art(id,cls,extra){ return `<svg class="art ${cls||""}" viewBox="${ARTVB[id]||"0 0 160 96"}" ${extra||""} aria-hidden="true"><use href="#${id}"/></svg>`; }
+const ARTVB={"a-hero":"0 0 300 240","a-womb":"0 0 160 160","a-tri1":"0 0 120 96","a-tri2":"0 0 120 96","a-tri3":"0 0 120 96",
+ "a-nutrition":"0 0 160 96","a-todo":"0 0 160 96","a-remind":"0 0 160 96","a-privacy":"0 0 160 120","a-calc":"0 0 160 96",
+ "a-empty":"0 0 160 110","a-c-due":"0 0 120 96","a-c-work":"0 0 120 96","a-c-coin":"0 0 120 96","a-c-gift":"0 0 120 96","a-p-before":"0 0 96 80","a-p-during":"0 0 96 80","a-p-after":"0 0 96 80","a-family":"0 0 170 116"};
+
+/* ---------- hero ---------- */
+function heroArt(){
+  const h=$("#hero"); if(!h || h.querySelector(".heroart")) return;
+  h.insertAdjacentHTML("afterbegin", art("a-hero","heroart"));
+}
+/* ---------- trimester cards ---------- */
+function triArt(){
+  $$("#triBanner .triseg").forEach(s=>{
+    if(s.querySelector(".triart")) return;
+    s.insertAdjacentHTML("beforeend", art("a-tri"+s.dataset.i,"triart"));
+  });
+}
+/* ---------- the produce orb gets the motif behind it ---------- */
+function orbArt(){
+  const o=$(".orb"); if(!o || o.querySelector(".orbart")) return;
+  o.insertAdjacentHTML("afterbegin", art("a-womb","orbart"));
+}
+/* ---------- illustrated section banners (they absorb the intro paragraph) ---------- */
+const BANNERS=[
+  ["#v-todo",   "a-todo",      "mint", "todoTitle", "todoIntro"],
+  ["#v-diet",   "a-nutrition", "sun",  "dietTitle", "dietIntro"],
+  ["#v-remind", "a-remind",    "",     "remTitle",  "remIntro"],
+  ["#v-calc",   "a-calc",      "sky",  "ratesT",    "ratesStand"]
+];
+function banners(){
+  BANNERS.forEach(([sel,id,tone,tk,xk])=>{
+    const view=$(sel); if(!view) return;
+    let b=view.querySelector(".banner");
+    if(!b){
+      b=document.createElement("div"); b.className="banner "+tone;
+      const intro=view.querySelector('p[data-i="'+xk+'"]');
+      if(intro){ intro.style.display="none"; intro.after(b); }
+      else { const g=view.querySelector(".grid")||view.querySelector(".card"); if(!g) return;
+             view.insertBefore(b,g); }
+    }
+    b.innerHTML = art(id,"bart") + `<div class="btx"><p>${esc(t()[xk]||"")}</p></div>`;
+  });
+}
+/* ---------- illustrated empty state ---------- */
+function emptyArt(){
+  const e=$("#logEmpty"); if(!e || e.querySelector("use")) return;
+  const txt=e.querySelector("div");
+  e.innerHTML = art("a-empty") + (txt? txt.outerHTML : "");
+}
+/* ---------- privacy scene ---------- */
+function privArt(){
+  const b=$("#privBody"); if(!b || b.querySelector(".privscene")) return;
+  b.insertAdjacentHTML("afterbegin", art("a-privacy","privscene"));
+}
+/* ---------- footer scene ---------- */
+function footArt(){
+  const f=document.querySelector("footer .cols > div"); if(!f || f.querySelector(".footart")) return;
+  f.insertAdjacentHTML("beforeend", art("a-family","footart"));
+}
+/* ---------- optional photo slots ---------- */
+const PHOTOVIEW={hero:"#v-dash",track:"#v-track",diet:"#v-diet",todo:"#v-todo"};
+const PHOTOTX={hero:["heroHi","privStrip"],track:["trackTitle","sizeCmp"],diet:["dietTitle","dietIntro"],todo:["todoTitle","todoIntro"]};
+function photos(){
+  Object.keys(PHOTOVIEW).forEach(slot=>{
+    const src=PHOTO[slot], view=$(PHOTOVIEW[slot]); if(!view) return;
+    let box=view.querySelector(".photo[data-slot='"+slot+"']");
+    if(!src){ if(box) box.remove(); return; }
+    if(!box){
+      box=document.createElement("div"); box.className="photo"; box.dataset.slot=slot;
+      view.insertBefore(box, view.firstChild);
+    }
+    const [tk,xk]=PHOTOTX[slot];
+    box.innerHTML=`<img src="${src}" alt="" loading="lazy" decoding="async">
+      <span class="scrim"></span>
+      <div class="ptx"><h3>${esc(t()[tk]||"")}</h3><p>${esc(t()[xk]||"")}</p></div>
+      ${PHOTO.credit?`<div class="cap">${esc(PHOTO.credit)}</div>`:""}`;
+  });
+}
+
+function artAll(){
+  try{ heroArt(); triArt(); orbArt(); banners(); emptyArt(); privArt(); footArt(); photos(); }catch(e){}
+}
+const _rAllArt=renderAll;
+window.renderAll=function(){ _rAllArt(); artAll(); };
+artAll();
+</script>
