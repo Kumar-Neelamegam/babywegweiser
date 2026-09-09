@@ -34,6 +34,7 @@ PACK.ro={ui:{
  bpSys:"Tensiune arterială sistolică",
  logAdd:"Adaugă", logPrint:"Tipărește pentru consultație",
  logEmpty:"Încă nicio înregistrare. Introdu greutatea sau tensiunea – rămâne pe dispozitivul tău.",
+ logNeedValue:"Te rugăm să introduci greutatea sau tensiunea.", logAdded:"Înregistrare salvată.",
  logEntries:"înregistrări – doar pe acest dispozitiv",
  kickTitle:"Numără mișcările bebelușului",
  kickIntro:"De pe la săptămâna 28: atinge la fiecare mișcare. Multe moașe recomandă 10 mișcări în 2 ore.",

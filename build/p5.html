@@ -22,13 +22,15 @@ function renderTrack(){
 $("#weekSlider").addEventListener("input",e=>{ trackWeek=+e.target.value; renderTrack(); });
 
 /* ---- personal log ---- */
+function logNum(v){ const n=parseFloat(String(v).trim().replace(",",".")); return Number.isFinite(n)?n:null; }
 $("#logAdd").onclick=()=>{
   const e={d:$("#logDate").value||new Date().toISOString().slice(0,10),
-    w:parseFloat($("#logWeight").value)||null, s:parseInt($("#logSys").value)||null, dia:parseInt($("#logDia").value)||null};
-  if(!e.w&&!e.s) return;
+    w:logNum($("#logWeight").value), s:logNum($("#logSys").value), dia:logNum($("#logDia").value)};
+  if(!e.w&&!e.s&&!e.dia){ toast(t().logNeedValue,"warn"); return; }
   S.log.push(e); S.log.sort((a,b)=>a.d<b.d?-1:1); save();
   $("#logWeight").value=$("#logSys").value=$("#logDia").value="";
   renderLogChart();
+  toast(t().logAdded,"good");
 };
 $("#logPrint").onclick=()=>window.print();
 function renderLogChart(){

@@ -34,6 +34,7 @@ PACK.tr={ui:{
  bpSys:"Tansiyon büyük değer",
  logAdd:"Kaydet", logPrint:"Randevu için yazdır",
  logEmpty:"Henüz kayıt yok. Kilonu veya tansiyonunu gir – cihazında kalır.",
+ logNeedValue:"Lütfen kilo veya tansiyon değeri gir.", logAdded:"Kayıt eklendi.",
  logEntries:"kayıt – yalnızca bu cihazda",
  kickTitle:"Bebek hareketlerini say",
  kickIntro:"Yaklaşık 28. haftadan itibaren: her harekette dokun. Birçok ebe 2 saatte 10 hareket takibini önerir.",

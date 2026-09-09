@@ -6,7 +6,7 @@
 <title>BabyWegweiser — Schwangerschaft in Österreich</title>
 <meta name="description" content="Dein persönlicher Schwangerschafts-Begleiter für Österreich: Eltern-Kind-Pass-Termine, Mutterschutz, Wochengeld, Kinderbetreuungsgeld, SSW-Tracker, Ernährung. Alle Daten bleiben auf deinem Gerät.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23a8447a'/%3E%3Cpath d='M16 26.6C12 23.4 7.4 19 7.4 13.4 7.4 8.7 10.9 5.4 16 5.4s8.6 3.3 8.6 8c0 5.6-4.6 10-8.6 13.2z' fill='none' stroke='white' stroke-width='1.9'/%3E%3Ccircle cx='16' cy='13' r='3' fill='none' stroke='white' stroke-width='1.9'/%3E%3C/svg%3E">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-qkwFfw84ATYr05q2FOOKGLK5XTUnxpTgcI+tok9UPZM=' 'sha256-mObH1rT7Qid72F9ZpNPd3wJkO3hcnz+QdnjPln+yR2o=' 'sha256-b34nSic+vIWUFvg6rupncQh8kyRi5VYbN49TpIz6KPg=' 'sha256-PpgtLeGAfQjID0v7mb3dAyBaTO/K3+Y3WRiaZ9nQKZc=' 'sha256-6V5K7giW3gkWnmqDkPC5hS02ttIwvJXBIsJ6a9WgdMQ=' 'sha256-HmEkFCPyK8RjohLVlPfrCwCi7H8cSIt+mk1s/DW3eY0=' 'sha256-kKatSkHHdQ0GXCPHK/gb6cy7CU0qjybU4dY2zw4sdO4='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-4tpRja7H5OdAdYv3/TA6iINVDZPruR5wJvdNOSqBJC8=' 'sha256-mObH1rT7Qid72F9ZpNPd3wJkO3hcnz+QdnjPln+yR2o=' 'sha256-b34nSic+vIWUFvg6rupncQh8kyRi5VYbN49TpIz6KPg=' 'sha256-GAUreNtIAEChka0T5WVxgLdlMenMajmnzHFJTYBVz3g=' 'sha256-6V5K7giW3gkWnmqDkPC5hS02ttIwvJXBIsJ6a9WgdMQ=' 'sha256-HmEkFCPyK8RjohLVlPfrCwCi7H8cSIt+mk1s/DW3eY0=' 'sha256-kKatSkHHdQ0GXCPHK/gb6cy7CU0qjybU4dY2zw4sdO4='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; manifest-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#fcfcfb">
@@ -1420,9 +1420,9 @@ main.wrap{padding-block:var(--sp-6) calc(var(--sp-6) * 2)}
     <div class="card"><div class="section-head"><h2 data-i="logTitle"></h2><span class="pill" data-i="pillLocal"></span></div>
       <div class="grid g2" style="gap:10px">
         <div class="field"><label class="f" data-i="logDate"></label><input type="date" id="logDate"></div>
-        <div class="field"><label class="f" data-i="logWeight"></label><input type="number" step="0.1" id="logWeight" placeholder="68.5"></div>
-        <div class="field"><label class="f" data-i="logSys"></label><input type="number" id="logSys" placeholder="120"></div>
-        <div class="field"><label class="f" data-i="logDia"></label><input type="number" id="logDia" placeholder="80"></div>
+        <div class="field"><label class="f" data-i="logWeight"></label><input type="text" inputmode="decimal" id="logWeight" placeholder="68,5"></div>
+        <div class="field"><label class="f" data-i="logSys"></label><input type="text" inputmode="numeric" id="logSys" placeholder="120"></div>
+        <div class="field"><label class="f" data-i="logDia"></label><input type="text" inputmode="numeric" id="logDia" placeholder="80"></div>
       </div>
       <div class="btnrow"><button class="btn primary" id="logAdd" data-i="logAdd"></button>
       <button class="btn ghost" id="logPrint" data-i="logPrint"></button></div>
@@ -1592,6 +1592,7 @@ de:{
  sizeLen:"Länge", sizeWt:"Gewicht", sizeCmp:"Vergleich",
  logTitle:"Mein Verlauf", logDate:"Datum", logWeight:"Gewicht (kg)", logSys:"Blutdruck systolisch", logDia:"Blutdruck diastolisch",
  logAdd:"Eintragen", logPrint:"Für Arzttermin drucken", logEmpty:"Noch keine Einträge. Trage Gewicht oder Blutdruck ein – es bleibt auf deinem Gerät.",
+ logNeedValue:"Bitte Gewicht oder Blutdruck eintragen.", logAdded:"Eintrag gespeichert.",
  kickTitle:"Kindsbewegungen zählen", kickIntro:"Ab etwa der 28. SSW: Tippe bei jeder Bewegung. Viele Hebammen empfehlen, auf 10 Bewegungen in 2 Stunden zu achten.",
  kickBtn:"Bewegung", kickCount:"Heute gezählt", kickReset:"Zurücksetzen",
  kickWarn:"Wenn du deutlich weniger Bewegungen spürst als sonst: sofort Ärztin/Arzt oder Krankenhaus kontaktieren. Warte nicht bis morgen.",
@@ -1736,6 +1737,7 @@ en:{
  sizeLen:"Length", sizeWt:"Weight", sizeCmp:"About the size of",
  logTitle:"My log", logDate:"Date", logWeight:"Weight (kg)", logSys:"Blood pressure systolic", logDia:"Blood pressure diastolic",
  logAdd:"Add entry", logPrint:"Print for appointment", logEmpty:"No entries yet. Add weight or blood pressure — it stays on your device.",
+ logNeedValue:"Please enter a weight or blood pressure value.", logAdded:"Entry saved.",
  kickTitle:"Kick counter", kickIntro:"From around week 28: tap for every movement. Many midwives suggest watching for 10 movements within 2 hours.",
  kickBtn:"Movement", kickCount:"Counted today", kickReset:"Reset",
  kickWarn:"If you feel noticeably fewer movements than usual, contact your doctor or hospital immediately. Do not wait until tomorrow.",
@@ -3191,13 +3193,15 @@ function renderTrack(){
 $("#weekSlider").addEventListener("input",e=>{ trackWeek=+e.target.value; renderTrack(); });
 
 /* ---- personal log ---- */
+function logNum(v){ const n=parseFloat(String(v).trim().replace(",",".")); return Number.isFinite(n)?n:null; }
 $("#logAdd").onclick=()=>{
   const e={d:$("#logDate").value||new Date().toISOString().slice(0,10),
-    w:parseFloat($("#logWeight").value)||null, s:parseInt($("#logSys").value)||null, dia:parseInt($("#logDia").value)||null};
-  if(!e.w&&!e.s) return;
+    w:logNum($("#logWeight").value), s:logNum($("#logSys").value), dia:logNum($("#logDia").value)};
+  if(!e.w&&!e.s&&!e.dia){ toast(t().logNeedValue,"warn"); return; }
   S.log.push(e); S.log.sort((a,b)=>a.d<b.d?-1:1); save();
   $("#logWeight").value=$("#logSys").value=$("#logDia").value="";
   renderLogChart();
+  toast(t().logAdded,"good");
 };
 $("#logPrint").onclick=()=>window.print();
 function renderLogChart(){

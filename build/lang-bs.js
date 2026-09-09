@@ -34,6 +34,7 @@ PACK.bs={ui:{
  bpSys:"Krvni pritisak – gornji",
  logAdd:"Sačuvaj", logPrint:"Odštampaj za pregled",
  logEmpty:"Još nema zapisa. Unesite težinu ili pritisak – ostaje na vašem uređaju.",
+ logNeedValue:"Unesite težinu ili pritisak.", logAdded:"Zapis sačuvan.",
  logEntries:"zapisa – samo na ovom uređaju",
  kickTitle:"Brojanje pokreta bebe",
  kickIntro:"Od otprilike 28. sedmice: dodirnite pri svakom pokretu. Mnoge babice preporučuju 10 pokreta u 2 sata.",
