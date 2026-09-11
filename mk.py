@@ -52,8 +52,8 @@ def add_csp(html):
            "media-src 'none'; "
            "object-src 'none'; "
            "frame-src 'none'; "
-           "worker-src 'none'; "
-           "manifest-src 'none'; "
+           "worker-src 'self'; "
+           "manifest-src 'self'; "
            "base-uri 'none'; "
            "form-action 'none'")
     head = ('<meta http-equiv="Content-Security-Policy" content="' + csp + '">\n'

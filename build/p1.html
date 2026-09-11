@@ -20,7 +20,14 @@ __OG_URL__
 <meta name="twitter:title" content="BabyWegweiser — Schwangerschaft in Österreich">
 <meta name="twitter:description" content="Dein persönlicher Schwangerschafts-Begleiter für Österreich: SSW-Tracker, Eltern-Kind-Pass, Mutterschutz, Wochengeld, Kinderbetreuungsgeld. Alle Daten bleiben auf deinem Gerät.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23a8447a'/%3E%3Cpath d='M16 26.6C12 23.4 7.4 19 7.4 13.4 7.4 8.7 10.9 5.4 16 5.4s8.6 3.3 8.6 8c0 5.6-4.6 10-8.6 13.2z' fill='none' stroke='white' stroke-width='1.9'/%3E%3Ccircle cx='16' cy='13' r='3' fill='none' stroke='white' stroke-width='1.9'/%3E%3C/svg%3E">
-<meta name="theme-color" content="#fcfcfb">
+<meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a19" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="BabyWegweiser">
+<meta name="mobile-web-app-capable" content="yes">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"BabyWegweiser","alternateName":"Schwangerschafts-Begleiter für Österreich","description":"Persönlicher Schwangerschafts-Begleiter für Österreich mit SSW-Tracker, Eltern-Kind-Pass-Terminen, Mutterschutz-, Wochengeld- und Kinderbetreuungsgeld-Rechnern. Läuft vollständig im Browser, keine Daten verlassen das Gerät.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":["de","en","tr","bs","ro","uk"],"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"areaServed":{"@type":"Country","name":"Austria"}}
 </script>
@@ -138,7 +145,7 @@ main{padding:22px 0 80px}
 .btn{
   border:1px solid var(--hairline);background:var(--surface-2);color:var(--ink-1);
   padding:10px 15px;border-radius:11px;cursor:pointer;font:inherit;font-size:.9rem;font-weight:560;
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;
 }
 .btn:hover{background:var(--plane)}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
@@ -146,12 +153,23 @@ main{padding:22px 0 80px}
 .btn.ghost{background:transparent}
 .btn.sm{padding:6px 11px;font-size:.82rem;border-radius:9px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
+.support-card{
+  background:var(--brand-soft);border-color:color-mix(in srgb,var(--brand) 28%,transparent);
+  text-align:center;
+}
+:root[data-theme="dark"] .support-card{background:color-mix(in srgb,var(--brand) 10%,var(--surface-1))}
+.support-card h2{font-size:1.1rem}
+.donate-row{justify-content:center}
+.donate-btn{flex:1 1 220px;max-width:320px;transition:transform .16s var(--ease-out),filter .18s,background .18s}
+.donate-btn:hover{transform:translateY(-1px)}
+.donate-btn:active{transform:translateY(0)}
+@media(max-width:480px){.donate-btn{flex-basis:100%}}
 label.f{display:block;font-size:.85rem;font-weight:600;margin:0 0 6px;color:var(--ink-2)}
 input[type=date],input[type=number],input[type=text],select,textarea{
   width:100%;padding:10px 12px;border-radius:11px;border:1px solid var(--hairline);
   background:var(--surface-2);color:var(--ink-1);font:inherit;font-size:.92rem;
 }
-input:focus,select:focus,textarea:focus,button:focus-visible,.tab:focus-visible{
+input:focus,select:focus,textarea:focus,button:focus-visible,.tab:focus-visible,.btn:focus-visible,a:focus-visible{
   outline:2px solid var(--brand);outline-offset:2px
 }
 .field{margin-bottom:14px}

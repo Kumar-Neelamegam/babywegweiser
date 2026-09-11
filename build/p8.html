@@ -141,4 +141,9 @@ const _goMo=go;
 window.go=function(v){ _goMo(v); requestAnimationFrame(tabInk); };
 motionAll();
 addEventListener("load",()=>{ tabInk(); artReveal(); });
+
+/* ---------- PWA: service worker registration ---------- */
+if("serviceWorker" in navigator){
+  addEventListener("load",()=>{ navigator.serviceWorker.register("./sw.js").catch(()=>{}); });
+}
 </script>
