@@ -62,6 +62,20 @@ you deploy and own — no third-party analytics service. Disabled by default
 for setup; it's the only network request the site ever makes, and `mk.py`
 scopes the CSP `connect-src` to exactly that one origin.
 
+### SEO
+
+The page ships with a meta description, Open Graph / Twitter Card tags,
+`WebApplication` JSON-LD structured data, a static crawlable `<h1>` +
+tagline inside `#hero` (overwritten by JS on load, seen by non-JS crawlers
+and before hydration), and a `<noscript>` fallback. `robots.txt` and
+`sitemap.xml` ship at the project root.
+
+The canonical link / `og:url` tag and the two placeholder files use
+`https://YOUR-USERNAME.github.io/babywegweiser/` until you set `SITE_URL`
+in `mk.py` (same pattern as `COUNTER_URL`) and rebuild — replace the
+placeholder in `robots.txt` and `sitemap.xml` by hand too, since those
+aren't templated by `mk.py`.
+
 ---
 
 ## Files

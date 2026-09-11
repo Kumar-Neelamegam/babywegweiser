@@ -5,6 +5,12 @@ import re, sys, hashlib, base64, subprocess, json, os
 # ship the site with the counter silently disabled.
 COUNTER_URL = "https://babywegweiser-counter.YOUR-SUBDOMAIN.workers.dev"
 
+# Set this to the site's live URL (e.g. after step 6 of the GitHub Pages
+# guide in README.md) to enable the canonical link and og:url tag. Leave the
+# placeholder in place to ship without them — a wrong canonical/og:url is
+# worse for SEO than none at all.
+SITE_URL = "https://YOUR-USERNAME.github.io/babywegweiser/"
+
 def assemble():
     p1 = open('build/p1.html').read()
     p1 = p1.replace('<style>', '<style>\n' + open('build/fonts.css').read(), 1)
@@ -17,7 +23,13 @@ def assemble():
                     ['p2.html', 'p3.html', 'p4.html', 'p4b.html', 'p5.html']]
     parts[-1] = parts[-1].replace('</body>', '').replace('</html>', '')
     html = ''.join(parts) + open('build/p6.html').read() + open('build/p7.html').read() + open('build/p8.html').read() + '\n</body>\n</html>\n'
-    return html.replace('__COUNTER_URL__', COUNTER_URL)
+    html = html.replace('__COUNTER_URL__', COUNTER_URL)
+    if 'YOUR-USERNAME' in SITE_URL:
+        html = html.replace('__CANONICAL__\n', '').replace('__OG_URL__\n', '')
+    else:
+        html = html.replace('__CANONICAL__', '<link rel="canonical" href="' + SITE_URL + '">')
+        html = html.replace('__OG_URL__', '<meta property="og:url" content="' + SITE_URL + '">')
+    return html
 
 def sha(txt):
     return "'sha256-" + base64.b64encode(hashlib.sha256(txt.encode('utf-8')).digest()).decode() + "'"
