@@ -116,13 +116,11 @@ function chartAnim(){
   ["#growthChart","#logChart"].forEach(sel=>{
     $$(sel+" path").forEach(p=>{
       if(p.getAttribute("fill")!=="none") return;
-      let len=0; try{ len=p.getTotalLength(); }catch(e){ return; }
-      if(!len) return;
       p.style.transition="none";
-      p.style.strokeDasharray=len; p.style.strokeDashoffset=len;
+      p.style.opacity="0"; p.style.transform="scaleY(.85)"; p.style.transformOrigin="bottom";
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
-        p.style.transition="stroke-dashoffset 1.3s cubic-bezier(.22,.9,.28,1)";
-        p.style.strokeDashoffset="0"; }));
+        p.style.transition="opacity .6s var(--ease-out), transform .6s var(--ease-out)";
+        p.style.opacity="1"; p.style.transform="none"; }));
     });
   });
 }
@@ -258,7 +256,7 @@ window.renderMoney=function(){
       <div style="flex:1;min-width:0"><div style="font-weight:650">${esc(n)}</div>
         <div class="tiny">${esc(d)}</div>
         <div class="meta" style="margin-top:6px">${dt?`<span class="pill">${ic("cal")} ${esc(t().fromDate)}${fmtDate(dt)}</span>`:""}
-        <a class="src" href="${u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ${ic("ext")}</a></div></div>
+        <a class="src" href="${u}" target="_blank" rel="noopener noreferrer" aria-label="${esc(n)} – ${esc(t().pillOfficial)}">${esc(t().pillOfficial)} ${ic("ext")}</a></div></div>
       <div class="amt">${esc(a)}<div class="tiny" style="font-weight:500;text-align:end">${esc(un)}</div></div></div>`;
   }).join("");
 };

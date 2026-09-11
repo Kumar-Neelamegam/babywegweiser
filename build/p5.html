@@ -15,7 +15,7 @@ function renderTrack(){
     <div class="sizebar"><div class="k">${esc(t().sizeWt)}</div><div class="v">${d.g?d.g+" g":"<1 g"}</div></div>
     <div class="sizebar"><div class="k">${esc(t().sizeCmp)}</div><div class="v" style="font-size:.98rem">${esc(LX(d))}</div></div>`;
   const act=MS.filter(m=>m.lane===0&&trackWeek>=m.a&&trackWeek<=m.b);
-  $("#weekNote").innerHTML=act.length? act.map(m=>`<div>• ${esc(LX(m))} — <a href="${m.u}" target="_blank" rel="noopener noreferrer">${esc(t().officialInfo)} ↗</a></div>`).join("")
+  $("#weekNote").innerHTML=act.length? act.map(m=>`<div>• ${esc(LX(m))} — <a href="${m.u}" target="_blank" rel="noopener noreferrer" aria-label="${esc(LX(m))} – ${esc(t().officialInfo)}">${esc(t().officialInfo)} ↗</a></div>`).join("")
     : esc(t().weekNoExam);
   renderLogChart(); renderKick();
 }
@@ -113,7 +113,7 @@ function renderTodo(){
       return `<li class="todo ${done?"done":""}"><input type="checkbox" ${done?"checked":""} data-id="${o.id}" aria-label="${esc(LX(o)[0])}">
         <div class="body"><div class="t">${esc(LX(o)[0])}</div><div class="d">${esc(LX(o)[1])}</div>
         <div class="meta">${dt&&S.due?`<span class="pill">${fmtDate(dt)}</span>`:""}
-          <a class="src" href="${o.u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ↗</a>
+          <a class="src" href="${o.u}" target="_blank" rel="noopener noreferrer" aria-label="${esc(LX(o)[0])} – ${esc(t().pillOfficial)}">${esc(t().pillOfficial)} ↗</a>
           ${dt&&S.due?`<button class="src" data-ics="${o.id}">${esc(t().calendarS)}</button>`:""}
         </div></div></li>`;
     }).join("")+`</ul>`;
@@ -486,25 +486,25 @@ function closeOnboard(){ $("#onboard").innerHTML=""; S.onboarded=true; save(); p
 function drawOb(){
   const steps=5;
   const body=[
-   ()=>`<h2>${esc(t().obTitle)}</h2><p class="muted">${esc(t().obSub)}</p>
-     <div class="field"><label class="f">${esc(t().obDue)}</label><input type="date" id="obDue" value="${S.due||""}"></div>
+   ()=>`<h2 id="obHeading">${esc(t().obTitle)}</h2><p class="muted">${esc(t().obSub)}</p>
+     <div class="field"><label class="f" for="obDue">${esc(t().obDue)}</label><input type="date" id="obDue" value="${S.due||""}"></div>
      <p class="tiny">${esc(t().obDueAlt)} <a href="#" data-obcalc="1">${esc(t().calcDueT)} ↗</a></p>`,
-   ()=>`<h2>${esc(t().obFirst)}</h2><div class="chips">
+   ()=>`<h2 id="obHeading">${esc(t().obFirst)}</h2><div class="chips">
      <button class="chip" data-k="first" data-v="1" aria-pressed="${S.first===true}">${esc(t().obYes)}</button>
      <button class="chip" data-k="first" data-v="0" aria-pressed="${S.first===false}">${esc(t().obNo)}</button></div>
      <p class="tiny" style="margin-top:12px">${esc(t().obFirstHint)}</p>`,
-   ()=>`<h2>${esc(t().obState)}</h2><div class="field"><select id="obState"><option value="">—</option>${STATES.map(s=>`<option ${S.state===s?"selected":""}>${s}</option>`).join("")}</select></div>
+   ()=>`<h2 id="obHeading">${esc(t().obState)}</h2><div class="field"><select id="obState" aria-labelledby="obHeading"><option value="">—</option>${STATES.map(s=>`<option ${S.state===s?"selected":""}>${s}</option>`).join("")}</select></div>
      <p class="tiny">${esc(t().obStateHint)}</p>`,
-   ()=>`<h2>${esc(t().obWork)}</h2><div class="chips">
+   ()=>`<h2 id="obHeading">${esc(t().obWork)}</h2><div class="chips">
      ${[["employed",t().obEmployed],["self",t().obSelf],["student",t().obStudent],["none",t().obNone]].map(([k,n])=>
        `<button class="chip" data-k="work" data-v="${k}" aria-pressed="${S.work===k}">${esc(n)}</button>`).join("")}</div>
      <p class="tiny" style="margin-top:12px">${esc(t().obWorkHint)}</p>`,
-   ()=>`<h2>${esc(t().obName)}</h2><div class="field"><input type="text" id="obName" value="${esc(S.name||"")}" placeholder="—"></div>
+   ()=>`<h2 id="obHeading">${esc(t().obName)}</h2><div class="field"><input type="text" id="obName" aria-labelledby="obHeading" value="${esc(S.name||"")}" placeholder="—"></div>
      <label class="switch" style="margin-bottom:10px"><input type="checkbox" id="obPartner" ${S.partner?"checked":""}><span>${esc(t().obPartner)}</span></label>
      <label class="switch"><input type="checkbox" id="obMulti" ${S.multi?"checked":""}><span>${esc(t().obMulti)}</span></label>
      <div class="note privacy" style="margin-top:16px">🔒 ${esc(t().privStrip)}</div>`
   ][ob]();
-  $("#onboard").innerHTML=`<div class="modal"><div class="sheet" role="dialog" aria-modal="true">
+  $("#onboard").innerHTML=`<div class="modal"><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="obHeading">
     <div class="steps">${Array.from({length:steps},(_,i)=>`<i class="${i<=ob?"on":""}"></i>`).join("")}</div>
     ${body}
     <div style="display:flex;gap:8px;margin-top:22px;align-items:center">

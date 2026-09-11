@@ -160,7 +160,7 @@ function renderNext(){
      const when = dl===0?t().today : dl===1?t().tomorrow : t().inDays.replace("%d",dl);
      return `<li class="todo"><div class="body"><div class="t">${esc(LX(o)[0])}</div>
        <div class="d">${fmtDate(d)} · ${esc(when)}</div>
-       <div class="meta"><a class="src" href="${o.u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ↗</a></div></div></li>`;
+       <div class="meta"><a class="src" href="${o.u}" target="_blank" rel="noopener noreferrer" aria-label="${esc(LX(o)[0])} – ${esc(t().pillOfficial)}">${esc(t().pillOfficial)} ↗</a></div></div></li>`;
    }).join("")}</ul>`:`<p class="muted">${esc(t().nextNone)}</p>`);
 }
 function renderFocus(){
@@ -174,7 +174,7 @@ function renderFocus(){
      <div><div style="font-weight:650">${esc(LX(wd))}</div>
      <div class="tiny">${wd.l} cm · ${wd.g?wd.g+" g":"—"}</div></div></div>
    ${act.length?`<ul class="clean">${act.map(m=>`<li class="todo"><div class="body"><div class="t">${esc(LX(m))}</div>
-     <div class="meta"><a class="src" href="${m.u}" target="_blank" rel="noopener noreferrer">↗ Quelle</a></div></div></li>`).join("")}</ul>`
+     <div class="meta"><a class="src" href="${m.u}" target="_blank" rel="noopener noreferrer" aria-label="${esc(LX(m))} – ${esc(t().pillOfficial)}">${esc(t().pillOfficial)} ↗</a></div></div></li>`).join("")}</ul>`
    :`<p class="muted">${esc(t().focusNone)}</p>`}`;
 }
 
@@ -292,7 +292,7 @@ function renderMoney(){
     const dt=dateOfWeek(w);
     return `<li class="todo"><div class="body"><div class="t">${esc(LX(n))}</div><div class="d">${esc(LX(d))}</div>
       <div class="meta">${dt?`<span class="pill">${esc(t().fromDate)}${fmtDate(dt)}</span>`:""}
-      <a class="src" href="${u}" target="_blank" rel="noopener noreferrer">${esc(t().pillOfficial)} ↗</a></div></div></li>`;
+      <a class="src" href="${u}" target="_blank" rel="noopener noreferrer" aria-label="${esc(LX(n))} – ${esc(t().pillOfficial)}">${esc(t().pillOfficial)} ↗</a></div></div></li>`;
   }).join("")+`</ul>`;
 }
 </script>

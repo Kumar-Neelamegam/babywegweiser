@@ -94,9 +94,7 @@ nav.tabs{position:relative}
   100%{transform:scale(1.14);opacity:0}
 }
 
-/* primary buttons get a slow gradient drift + sheen on hover */
-.btn.primary{background-size:180% 180%;animation:drift 9s ease infinite}
-@keyframes drift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+/* primary buttons get a sheen on hover (transform-only: stays off the main thread) */
 .btn.primary::after{
   content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
   background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.42) 50%,transparent 65%);

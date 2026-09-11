@@ -6,7 +6,7 @@
 <header class="top">
   <div class="wrap">
     <div class="topbar">
-      <a class="logo" href="#" data-go="dash"><span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#i-logo"/></svg></span><span data-i="brand">BabyWegweiser</span></a>
+      <a class="logo" href="#" data-go="dash" aria-label="BabyWegweiser"><span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#i-logo"/></svg></span><span data-i="brand">BabyWegweiser</span></a>
       <span class="spacer"></span>
       <select class="lang" id="langSel" aria-label="Sprache / Language">
         <option value="de">🇦🇹 Deutsch</option>
@@ -67,10 +67,10 @@
   <div class="grid g2" style="margin-top:16px">
     <div class="card"><div class="section-head"><h2 data-i="logTitle"></h2><span class="pill" data-i="pillLocal"></span></div>
       <div class="grid g2" style="gap:10px">
-        <div class="field"><label class="f" data-i="logDate"></label><input type="date" id="logDate"></div>
-        <div class="field"><label class="f" data-i="logWeight"></label><input type="text" inputmode="decimal" id="logWeight" placeholder="68,5"></div>
-        <div class="field"><label class="f" data-i="logSys"></label><input type="text" inputmode="numeric" id="logSys" placeholder="120"></div>
-        <div class="field"><label class="f" data-i="logDia"></label><input type="text" inputmode="numeric" id="logDia" placeholder="80"></div>
+        <div class="field"><label class="f" for="logDate" data-i="logDate"></label><input type="date" id="logDate"></div>
+        <div class="field"><label class="f" for="logWeight" data-i="logWeight"></label><input type="text" inputmode="decimal" id="logWeight" placeholder="68,5"></div>
+        <div class="field"><label class="f" for="logSys" data-i="logSys"></label><input type="text" inputmode="numeric" id="logSys" placeholder="120"></div>
+        <div class="field"><label class="f" for="logDia" data-i="logDia"></label><input type="text" inputmode="numeric" id="logDia" placeholder="80"></div>
       </div>
       <div class="btnrow"><button class="btn primary" id="logAdd" data-i="logAdd"></button>
       <button class="btn ghost" id="logPrint" data-i="logPrint"></button></div>
@@ -119,26 +119,26 @@
 <section id="v-calc" class="view hide">
   <div class="grid g2">
     <div class="card"><div class="section-head"><h3 data-i="calcDueT"></h3></div>
-      <div class="field"><label class="f" data-i="calcLmp"></label><input type="date" id="cLmp"></div>
-      <div class="field"><label class="f" data-i="calcCycle"></label><input type="number" id="cCycle" value="28" min="20" max="45"></div>
+      <div class="field"><label class="f" for="cLmp" data-i="calcLmp"></label><input type="date" id="cLmp"></div>
+      <div class="field"><label class="f" for="cCycle" data-i="calcCycle"></label><input type="number" id="cCycle" value="28" min="20" max="45"></div>
       <button class="btn primary" id="cDueBtn" data-i="calcRun"></button>
       <div id="cDueOut" class="note hide"></div></div>
 
     <div class="card"><div class="section-head"><h3 data-i="calcMsT"></h3></div>
       <p class="tiny" data-i="calcMsHint"></p>
-      <div class="field"><label class="f" data-i="calcDue"></label><input type="date" id="cMsDue"></div>
+      <div class="field"><label class="f" for="cMsDue" data-i="calcDue"></label><input type="date" id="cMsDue"></div>
       <label class="switch" style="margin-bottom:12px"><input type="checkbox" id="cMsMulti"><span data-i="calcMsMulti"></span></label>
       <button class="btn primary" id="cMsBtn" data-i="calcRun"></button>
       <div id="cMsOut" class="note hide"></div></div>
 
     <div class="card"><div class="section-head"><h3 data-i="calcWgT"></h3></div>
-      <div class="field"><label class="f" data-i="calcNet"></label><input type="number" id="cNet" placeholder="2200"></div>
+      <div class="field"><label class="f" for="cNet" data-i="calcNet"></label><input type="number" id="cNet" placeholder="2200"></div>
       <button class="btn primary" id="cWgBtn" data-i="calcRun"></button>
       <div id="cWgOut" class="note hide"></div>
       <p class="tiny" style="margin-top:10px" data-i="calcWgNote"></p></div>
 
     <div class="card"><div class="section-head"><h3 data-i="calcKbgT"></h3></div>
-      <div class="field"><label class="f" data-i="calcKbgDays"></label><input type="number" id="cDays" value="365" min="365" max="851"></div>
+      <div class="field"><label class="f" for="cDays" data-i="calcKbgDays"></label><input type="number" id="cDays" value="365" min="365" max="851"></div>
       <button class="btn primary" id="cKbgBtn" data-i="calcRun"></button>
       <div id="cKbgOut" class="note hide"></div>
       <p class="tiny" style="margin-top:10px" data-i="calcKbgNote"></p></div>
@@ -160,8 +160,8 @@
     </div>
     <h3 data-i="remOwn"></h3>
     <div class="grid g3" style="gap:10px">
-      <div class="field"><label class="f" data-i="remWhat"></label><input type="text" id="remT" placeholder="…"></div>
-      <div class="field"><label class="f" data-i="remWhen"></label><input type="date" id="remD"></div>
+      <div class="field"><label class="f" for="remT" data-i="remWhat"></label><input type="text" id="remT" placeholder="…"></div>
+      <div class="field"><label class="f" for="remD" data-i="remWhen"></label><input type="date" id="remD"></div>
       <div class="field"><label class="f">&nbsp;</label><button class="btn primary" id="remAdd" style="width:100%" data-i="remAddBtn"></button></div>
     </div>
     <div id="remList"></div>
@@ -198,7 +198,7 @@
       <a href="#" data-go="priv">Impressum</a>
       <p class="tiny" style="margin-top:8px" data-i="footDisc"></p></div>
   </div>
-  <div class="tiny" id="viewCounter" style="margin-top:14px;opacity:.7" aria-live="polite">👁 <span id="viewCountN">–</span> <span data-i="viewCountLabel"></span></div>
+  <div class="tiny" id="viewCounter" style="margin-top:14px" aria-live="polite">👁 <span id="viewCountN">–</span> <span data-i="viewCountLabel"></span></div>
 </div></footer>
 
 <div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
