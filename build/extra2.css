@@ -24,12 +24,8 @@
 .badge .ic{width:21px;height:21px}
 
 /* ---------- brand mark ---------- */
-.logo .mark{
-  width:34px;height:34px;border-radius:11px;color:#fff;font-size:0;
-  box-shadow:0 4px 12px color-mix(in srgb,var(--brand) 38%,transparent);
-}
-.logo .mark svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.logo .mark svg .f{fill:#fff;stroke:none;opacity:.3}
+.logo .mark{width:34px;height:34px}
+.logo .mark svg{width:100%;height:100%;display:block}
 
 /* ==========================================================================
    SPACING — one consistent rhythm

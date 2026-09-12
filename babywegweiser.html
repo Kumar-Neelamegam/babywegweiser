@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="BabyWegweiser — Schwangerschaft in Österreich">
 <meta name="twitter:description" content="Dein persönlicher Schwangerschafts-Begleiter für Österreich: SSW-Tracker, Eltern-Kind-Pass, Mutterschutz, Wochengeld, Kinderbetreuungsgeld. Alle Daten bleiben auf deinem Gerät.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23a8447a'/%3E%3Cpath d='M16 26.6C12 23.4 7.4 19 7.4 13.4 7.4 8.7 10.9 5.4 16 5.4s8.6 3.3 8.6 8c0 5.6-4.6 10-8.6 13.2z' fill='none' stroke='white' stroke-width='1.9'/%3E%3Ccircle cx='16' cy='13' r='3' fill='none' stroke='white' stroke-width='1.9'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='32' cy='60.7' rx='11' ry='2.2' fill='%23000' opacity='.13'/%3E%3Cpath fill='%239db9d9' transform='translate(34 16) rotate(200)' d='M0,0 C7.8,-7 18.2,-7 26,0 C18.2,7 7.8,7 0,0 Z'/%3E%3Cpath fill='%239db9d9' transform='translate(33 21) rotate(175)' d='M0,0 C7.5,-7 17.5,-7 25,0 C17.5,7 7.5,7 0,0 Z'/%3E%3Cpath fill='%239db9d9' transform='translate(32 27) rotate(155)' d='M0,0 C6.3,-6.5 14.7,-6.5 21,0 C14.7,6.5 6.3,6.5 0,0 Z'/%3E%3Cpath fill='%237fa0c9' d='M32 20C41 20 48 27 48 36C48 46 40 55 32 61C24 55 16 46 16 36C16 27 23 20 32 20Z'/%3E%3Cpolygon fill='%23fff' points='32,28 33.7,34.8 39.8,31.2 36.1,37.3 43,39 36.1,40.7 39.8,46.8 33.7,43.2 32,50 30.3,43.2 24.2,46.8 27.9,40.7 21,39 27.9,37.3 24.2,31.2 30.3,34.8'/%3E%3Ccircle fill='%239db9d9' cx='39' cy='13' r='6.5'/%3E%3Ccircle fill='%232a2a2a' cx='41.5' cy='11' r='1'/%3E%3Cpolygon fill='%23f0a868' points='42,10.5 57,15 48,15.8 42,15.3'/%3E%3Cpath fill='none' stroke='%23f0a868' stroke-width='2' stroke-linecap='round' d='M53.5 15.5C55.5 18 54.5 20.5 52 22.5'/%3E%3Ccircle fill='%23f0a868' cx='48.5' cy='26' r='5.5'/%3E%3C/svg%3E">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"BabyWegweiser","alternateName":"Schwangerschafts-Begleiter für Österreich","description":"Persönlicher Schwangerschafts-Begleiter für Österreich mit SSW-Tracker, Eltern-Kind-Pass-Terminen, Mutterschutz-, Wochengeld- und Kinderbetreuungsgeld-Rechnern. Läuft vollständig im Browser, keine Daten verlassen das Gerät.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":["de","en","tr","bs","ro","uk"],"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"areaServed":{"@type":"Country","name":"Austria"}}
 </script>
@@ -98,7 +98,7 @@ header.top{
 }
 .topbar{display:flex;align-items:center;gap:12px;height:60px}
 .logo{display:flex;align-items:center;gap:9px;font-weight:750;letter-spacing:-.02em;font-size:1.06rem;color:var(--ink-1);text-decoration:none}
-.logo .mark{width:30px;height:30px;border-radius:10px;background:linear-gradient(140deg,var(--brand),#e08bb4);display:grid;place-items:center;color:#fff;font-size:15px}
+.logo .mark{display:grid;place-items:center}
 .spacer{flex:1}
 .iconbtn{
   white-space:nowrap;
@@ -557,12 +557,8 @@ footer a:hover{transform:translateX(3px)}
 .badge .ic{width:21px;height:21px}
 
 /* ---------- brand mark ---------- */
-.logo .mark{
-  width:34px;height:34px;border-radius:11px;color:#fff;font-size:0;
-  box-shadow:0 4px 12px color-mix(in srgb,var(--brand) 38%,transparent);
-}
-.logo .mark svg{width:21px;height:21px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.logo .mark svg .f{fill:#fff;stroke:none;opacity:.3}
+.logo .mark{width:34px;height:34px}
+.logo .mark svg{width:100%;height:100%;display:block}
 
 /* ==========================================================================
    SPACING — one consistent rhythm
@@ -979,12 +975,19 @@ main.wrap{padding-block:var(--sp-6) calc(var(--sp-6) * 2)}
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true" focusable="false"><defs>
-<!-- brand mark -->
-<symbol id="i-logo" viewBox="0 0 32 32">
-  <path class="f" d="M16 4c5.6 0 9.4 3.6 9.4 9 0 6.6-5.4 11.6-9.4 15C12 24.6 6.6 19.6 6.6 13c0-5.4 3.8-9 9.4-9z"/>
-  <path d="M16 27.8C11.6 24.2 6.4 19.4 6.4 13.1 6.4 7.9 10.3 4.2 16 4.2s9.6 3.7 9.6 8.9c0 6.3-5.2 11.1-9.6 14.7z"/>
-  <circle cx="16" cy="13" r="3.4"/>
-  <path d="M12.6 20.6c1-1.2 2.1-1.8 3.4-1.8s2.4.6 3.4 1.8"/>
+<!-- brand mark: stork carrying a bundle over a compass way-point -->
+<symbol id="i-logo" viewBox="0 0 64 64">
+  <ellipse cx="32" cy="60.7" rx="11" ry="2.2" fill="#000" opacity=".13"/>
+  <path fill="#9db9d9" transform="translate(34 16) rotate(200)" d="M0,0 C7.8,-7 18.2,-7 26,0 C18.2,7 7.8,7 0,0 Z"/>
+  <path fill="#9db9d9" transform="translate(33 21) rotate(175)" d="M0,0 C7.5,-7 17.5,-7 25,0 C17.5,7 7.5,7 0,0 Z"/>
+  <path fill="#9db9d9" transform="translate(32 27) rotate(155)" d="M0,0 C6.3,-6.5 14.7,-6.5 21,0 C14.7,6.5 6.3,6.5 0,0 Z"/>
+  <path fill="#7fa0c9" d="M32 20C41 20 48 27 48 36C48 46 40 55 32 61C24 55 16 46 16 36C16 27 23 20 32 20Z"/>
+  <polygon fill="#fff" points="32,28 33.7,34.8 39.8,31.2 36.1,37.3 43,39 36.1,40.7 39.8,46.8 33.7,43.2 32,50 30.3,43.2 24.2,46.8 27.9,40.7 21,39 27.9,37.3 24.2,31.2 30.3,34.8"/>
+  <circle fill="#9db9d9" cx="39" cy="13" r="6.5"/>
+  <circle fill="#2a2a2a" cx="41.5" cy="11" r="1"/>
+  <polygon fill="#f0a868" points="42,10.5 57,15 48,15.8 42,15.3"/>
+  <path fill="none" stroke="#f0a868" stroke-width="2" stroke-linecap="round" d="M53.5 15.5C55.5 18 54.5 20.5 52 22.5"/>
+  <circle fill="#f0a868" cx="48.5" cy="26" r="5.5"/>
 </symbol>
 
 <!-- navigation -->
@@ -1394,7 +1397,7 @@ main.wrap{padding-block:var(--sp-6) calc(var(--sp-6) * 2)}
 <header class="top">
   <div class="wrap">
     <div class="topbar">
-      <a class="logo" href="#" data-go="dash" aria-label="BabyWegweiser"><span class="mark"><svg viewBox="0 0 32 32" aria-hidden="true"><use href="#i-logo"/></svg></span><span data-i="brand">BabyWegweiser</span></a>
+      <a class="logo" href="#" data-go="dash" aria-label="BabyWegweiser"><span class="mark"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#i-logo"/></svg></span><span data-i="brand">BabyWegweiser</span></a>
       <span class="spacer"></span>
       <select class="lang" id="langSel" aria-label="Sprache / Language">
         <option value="de">🇦🇹 Deutsch</option>
