@@ -416,6 +416,7 @@ function renderRem(){
 /* ============================== PRIVACY ============================== */
 function renderPriv(){
   $("#privBody").innerHTML=t().privHtml;
+  $("#aboutBody").innerHTML=t().aboutHtml;
   $("#storageInfo").textContent=canStore?t().storageOk:t().storageNo;
   $("#srcBody").innerHTML=`<ul class="clean">`+[
     ["Eltern-Kind-Pass","gesundheit.gv.at",L.ekp],
