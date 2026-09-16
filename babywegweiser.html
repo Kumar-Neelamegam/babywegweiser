@@ -21,7 +21,7 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebApplication","name":"BabyWegweiser","alternateName":"Schwangerschafts-Begleiter für Österreich","description":"Persönlicher Schwangerschafts-Begleiter für Österreich mit SSW-Tracker, Eltern-Kind-Pass-Terminen, Mutterschutz-, Wochengeld- und Kinderbetreuungsgeld-Rechnern. Läuft vollständig im Browser, keine Daten verlassen das Gerät.","applicationCategory":"HealthApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","inLanguage":["de","en","tr","bs","ro","uk"],"isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"},"areaServed":{"@type":"Country","name":"Austria"}}
 </script>
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hyznJ2YjJuA5vrY3Kv6bUw31YWBjuuDJSt+czIaCXGU=' 'sha256-+e8umo/x1uuO+tPN90/UCrevyg8uwpAP/hchG7FxgDU=' 'sha256-b34nSic+vIWUFvg6rupncQh8kyRi5VYbN49TpIz6KPg=' 'sha256-zBb68Her3T2m4B+CfBzlGnuz/tPDTsbVMc91x62ekAY=' 'sha256-qh4mU5Omy12OaSw3h60k79D52YS86Y7QN8QAN8O4duQ=' 'sha256-HmEkFCPyK8RjohLVlPfrCwCi7H8cSIt+mk1s/DW3eY0=' 'sha256-qr74FAwKnN4d3v21yR/+RAOrgjOu74otYEDCzxlf4OU='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-hyznJ2YjJuA5vrY3Kv6bUw31YWBjuuDJSt+czIaCXGU=' 'sha256-+e8umo/x1uuO+tPN90/UCrevyg8uwpAP/hchG7FxgDU=' 'sha256-b34nSic+vIWUFvg6rupncQh8kyRi5VYbN49TpIz6KPg=' 'sha256-2XuIsjKJO9jv016AIC/ABmTrU73HUMMdb1VoiH2EGhw=' 'sha256-qh4mU5Omy12OaSw3h60k79D52YS86Y7QN8QAN8O4duQ=' 'sha256-HmEkFCPyK8RjohLVlPfrCwCi7H8cSIt+mk1s/DW3eY0=' 'sha256-qr74FAwKnN4d3v21yR/+RAOrgjOu74otYEDCzxlf4OU='; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#fcfcfb" media="(prefers-color-scheme: light)">
@@ -1436,6 +1436,10 @@ main.wrap{padding-block:var(--sp-6) calc(var(--sp-6) * 2)}
       <div class="legend" id="growthLegend"></div></div>
     <div class="card"><div class="section-head"><h2 data-i="moneyTitle"></h2></div>
       <div id="moneyBox"></div></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="section-head"><h2 data-i="aboutTitle"></h2></div>
+    <div id="aboutBodyHome"></div>
   </div>
 </section>
 
@@ -3658,6 +3662,7 @@ function renderRem(){
 function renderPriv(){
   $("#privBody").innerHTML=t().privHtml;
   $("#aboutBody").innerHTML=t().aboutHtml;
+  $("#aboutBodyHome").innerHTML=t().aboutHtml;
   $("#storageInfo").textContent=canStore?t().storageOk:t().storageNo;
   $("#srcBody").innerHTML=`<ul class="clean">`+[
     ["Eltern-Kind-Pass","gesundheit.gv.at",L.ekp],
